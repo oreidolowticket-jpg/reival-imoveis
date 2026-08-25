@@ -7,6 +7,8 @@ let fotos = [];
 let fotoAtual = 0;
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+const tituloImovel = (i) => i.titulo || [i.tipo || 'Imóvel', i.cidade ? `em ${i.cidade}` : ''].filter(Boolean).join(' ');
 const fmtPreco = (valor, finalidade) => {
   if (valor == null) return 'Consulte';
   const preco = Number(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 });
@@ -53,7 +55,8 @@ window.mudarFoto = (dir) => {
 window.irParaFoto = (i) => { fotoAtual = i; renderFotoPrincipal(); };
 
 function renderImovel(imovel) {
-  document.title = `${imovel.titulo} | Reival Imóveis`;
+  const titulo = tituloImovel(imovel);
+  document.title = `${titulo} | Reival Imóveis`;
   fotos = Array.isArray(imovel.fotos) ? imovel.fotos : [];
   fotoAtual = 0;
 
@@ -62,11 +65,12 @@ function renderImovel(imovel) {
   if (imovel.banheiros) chips.push(`<span class="atributo-chip">${ICONES.banho} ${imovel.banheiros} banheiro${imovel.banheiros > 1 ? 's' : ''}</span>`);
   if (imovel.vagas) chips.push(`<span class="atributo-chip">${ICONES.carro} ${imovel.vagas} vaga${imovel.vagas > 1 ? 's' : ''}</span>`);
   if (imovel.area) chips.push(`<span class="atributo-chip">${ICONES.area} ${Number(imovel.area).toLocaleString('pt-BR')} m²</span>`);
-  chips.push(`<span class="atributo-chip">${ICONES.pino} ${esc([imovel.bairro, imovel.cidade].filter(Boolean).join(', '))}</span>`);
+  const localidade = [imovel.bairro, imovel.cidade].filter(Boolean).join(', ');
+  if (localidade) chips.push(`<span class="atributo-chip">${ICONES.pino} ${esc(localidade)}</span>`);
   if (imovel.aceita_financiamento) chips.push(`<span class="atributo-chip">${ICONES.cifrao} Aceita financiamento</span>`);
 
-  const msg = `Olá! Tenho interesse no imóvel "${imovel.titulo}" (código ${imovel.codigo}) que vi no site Reival Imóveis. Pode me passar mais informações?`;
-  const msgVisita = `Olá! Gostaria de agendar uma visita ao imóvel "${imovel.titulo}" (código ${imovel.codigo}).`;
+  const msg = `Olá! Tenho interesse no imóvel "${titulo}" (código ${imovel.codigo}) que vi no site Reival Imóveis. Pode me passar mais informações?`;
+  const msgVisita = `Olá! Gostaria de agendar uma visita ao imóvel "${titulo}" (código ${imovel.codigo}).`;
 
   document.getElementById('conteudo-imovel').innerHTML = `
     <nav class="breadcrumb">
@@ -94,8 +98,8 @@ function renderImovel(imovel) {
       </div>
       <aside class="painel-lateral">
         <div class="cartao-info">
-          <span class="tipo-bairro">${esc(imovel.tipo)} · ${esc([imovel.bairro, imovel.cidade].filter(Boolean).join(', '))} · Código ${imovel.codigo}</span>
-          <h1>${esc(imovel.titulo)}</h1>
+          <span class="tipo-bairro">${esc([imovel.tipo, [imovel.bairro, imovel.cidade].filter(Boolean).join(', ')].filter(Boolean).join(' · '))} · Código ${imovel.codigo}</span>
+          <h1>${esc(titulo)}</h1>
           <div class="preco-grande">${fmtPreco(imovel.preco, imovel.finalidade)}</div>
           <span class="rotulo-preco">${imovel.finalidade === 'Aluguel' ? 'Valor do aluguel' : 'Valor de venda'}</span>
           ${chips.length ? `<div class="atributos-grade">${chips.join('')}</div>` : ''}
@@ -114,7 +118,7 @@ function renderImovel(imovel) {
 function cardSimilar(i) {
   const fts = Array.isArray(i.fotos) ? i.fotos : [];
   const foto = fts.length
-    ? `<img src="${esc(fts[0])}" alt="${esc(i.titulo)}" loading="lazy">`
+    ? `<img src="${esc(fts[0])}" alt="${esc(tituloImovel(i))}" loading="lazy">`
     : `<div class="sem-foto">${ICONES.casa}</div>`;
   return `
     <a class="card-imovel" href="imovel?id=${i.id}">
@@ -125,8 +129,8 @@ function cardSimilar(i) {
         ${foto}
       </div>
       <div class="card-corpo">
-        <span class="tipo-bairro">${esc(i.tipo)} · ${esc([i.bairro, i.cidade].filter(Boolean).join(', '))}</span>
-        <h3>${esc(i.titulo)}</h3>
+        <span class="tipo-bairro">${esc([i.tipo, [i.bairro, i.cidade].filter(Boolean).join(', ')].filter(Boolean).join(' · '))}</span>
+        <h3>${esc(tituloImovel(i))}</h3>
         <span class="codigo">Código: ${i.codigo}</span>
         <div class="card-preco" style="margin-top:12px;">
           <span class="valor">${fmtPreco(i.preco, i.finalidade)}</span>

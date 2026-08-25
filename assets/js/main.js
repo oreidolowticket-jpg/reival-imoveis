@@ -16,6 +16,8 @@ const zapLink = (msg) => `https://wa.me/${CONFIG.WHATSAPP}?text=${encodeURICompo
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
+const tituloImovel = (i) => i.titulo || [i.tipo || 'Imóvel', i.cidade ? `em ${i.cidade}` : ''].filter(Boolean).join(' ');
+
 const ICONES = {
   cama: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 20v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8"/><path d="M2 17h20"/><path d="M6 10V7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3"/></svg>',
   banho: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12h16a1 1 0 0 1 1 1 7 7 0 0 1-7 7h-4a7 7 0 0 1-7-7 1 1 0 0 1 1-1z"/><path d="M6 12V5a2 2 0 0 1 2-2h1"/></svg>',
@@ -28,7 +30,7 @@ const ICONES = {
 function cardImovel(imovel) {
   const fotos = Array.isArray(imovel.fotos) ? imovel.fotos : [];
   const foto = fotos.length
-    ? `<img src="${esc(fotos[0])}" alt="${esc(imovel.titulo)}" loading="lazy">`
+    ? `<img src="${esc(fotos[0])}" alt="${esc(tituloImovel(imovel))}" loading="lazy">`
     : `<div class="sem-foto">${ICONES.casa}</div>`;
 
   const atributos = [];
@@ -47,8 +49,8 @@ function cardImovel(imovel) {
         ${foto}
       </div>
       <div class="card-corpo">
-        <span class="tipo-bairro">${esc(imovel.tipo)} · ${esc([imovel.bairro, imovel.cidade].filter(Boolean).join(', '))}</span>
-        <h3>${esc(imovel.titulo)}</h3>
+        <span class="tipo-bairro">${esc([imovel.tipo, [imovel.bairro, imovel.cidade].filter(Boolean).join(', ')].filter(Boolean).join(' · '))}</span>
+        <h3>${esc(tituloImovel(imovel))}</h3>
         <span class="codigo">Código: ${imovel.codigo}</span>
         ${atributos.length ? `<div class="card-atributos">${atributos.join('')}</div>` : '<div class="card-atributos"><span>Consulte detalhes</span></div>'}
         <div class="card-preco">
@@ -108,7 +110,7 @@ document.getElementById('form-busca').addEventListener('submit', (e) => {
     if (tipo && i.tipo !== tipo) return false;
     if (cidade && i.cidade !== cidade) return false;
     if (termo) {
-      const alvo = `${i.titulo} ${i.codigo || ''} ${i.bairro || ''} ${i.cidade || ''} ${i.descricao || ''} ${i.endereco || ''}`.toLowerCase();
+      const alvo = `${i.titulo || ''} ${i.codigo || ''} ${i.bairro || ''} ${i.cidade || ''} ${i.descricao || ''} ${i.endereco || ''}`.toLowerCase();
       if (!alvo.includes(termo)) return false;
     }
     return true;

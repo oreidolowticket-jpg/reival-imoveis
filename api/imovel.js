@@ -35,7 +35,8 @@ module.exports = async (req, res) => {
         const preco = im.preco != null
           ? Number(im.preco).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) + (im.finalidade === 'Aluguel' ? '/mês' : '')
           : 'Consulte';
-        const title = `${im.titulo} - ${im.cidade || 'SP'} | Reival Imóveis`;
+        const nome = im.titulo || [im.tipo || 'Imóvel', im.cidade ? `em ${im.cidade}` : ''].filter(Boolean).join(' ');
+        const title = `${nome} - ${im.cidade || 'SP'} | Reival Imóveis`;
         const desc = `${im.tipo} para ${im.finalidade === 'Aluguel' ? 'alugar' : 'comprar'} em ${local}: ${preco}. Código ${im.codigo}. Reival Imóveis, São Paulo e região.`;
         const img = (Array.isArray(im.fotos) && im.fotos[0]) || `${base}/assets/logo.png`;
         const url = `${base}/imovel?id=${id}`;
@@ -43,7 +44,7 @@ module.exports = async (req, res) => {
         const jsonLd = {
           '@context': 'https://schema.org',
           '@type': 'RealEstateListing',
-          name: im.titulo,
+          name: nome,
           url,
           image: img,
           description: (im.descricao || desc).slice(0, 500),

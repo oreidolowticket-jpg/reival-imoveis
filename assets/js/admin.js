@@ -10,6 +10,7 @@ let fotosForm = [];
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const fmtPreco = (v) => v == null ? 'Consulte' : Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+const tituloImovel = (i) => i.titulo || [i.tipo || 'Imóvel', i.cidade ? `em ${i.cidade}` : ''].filter(Boolean).join(' ');
 
 // ---------- Máscara de preço (1.000.000 ou 1.000.000,50) ----------
 function formatarPrecoDigitado(valor) {
@@ -132,7 +133,7 @@ function renderLista() {
       <div class="linha-imovel ${i.ativo ? '' : 'inativo'}">
         <div class="linha-foto">${foto}</div>
         <div class="linha-info">
-          <h3>${esc(i.titulo)}</h3>
+          <h3>${esc(tituloImovel(i))}</h3>
           <div class="meta">
             <span>Cód. ${i.codigo}</span>
             <span>${esc(i.tipo)} · ${esc([i.bairro, i.cidade].filter(Boolean).join(', '))}</span>
@@ -170,7 +171,7 @@ window.alternarCampo = async (id, campo) => {
 window.excluirImovel = async (id) => {
   const imovel = imoveis.find((i) => i.id === id);
   if (!imovel) return;
-  if (!confirm(`Excluir "${imovel.titulo}" (cód. ${imovel.codigo})?\nEssa ação não pode ser desfeita.`)) return;
+  if (!confirm(`Excluir "${tituloImovel(imovel)}" (cód. ${imovel.codigo})?\nEssa ação não pode ser desfeita.`)) return;
 
   const { error } = await sb.from('imoveis').delete().eq('id', id);
   if (error) { toast('Erro ao excluir. Tente novamente.'); console.error(error); return; }
@@ -325,11 +326,11 @@ $('form-imovel').addEventListener('submit', async (e) => {
 
     const numOuNull = (id) => { const v = $(id).value; return v === '' ? null : Number(v); };
     const registro = {
-      titulo: $('i-titulo').value.trim(),
+      titulo: $('i-titulo').value.trim() || null,
       ...($('i-codigo').value.trim() !== '' ? { codigo: $('i-codigo').value.trim().toUpperCase() } : {}),
       tipo: $('i-tipo').value,
       finalidade: $('i-finalidade').value,
-      cidade: $('i-cidade').value.trim(),
+      cidade: $('i-cidade').value.trim() || null,
       bairro: $('i-bairro').value.trim() || null,
       preco: parsearPreco($('i-preco').value),
       quartos: numOuNull('i-quartos'),

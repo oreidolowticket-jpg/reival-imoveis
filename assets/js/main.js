@@ -1,0 +1,195 @@
+// ============================================================
+// CaçapavaImóveis — Landing page
+// ============================================================
+const sb = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
+
+let todosImoveis = [];
+let fotoAtual = 0;
+let fotosModal = [];
+
+// ---------- Utilitários ----------
+const fmtPreco = (valor, finalidade) => {
+  if (valor == null) return 'Consulte';
+  const preco = Number(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 });
+  return finalidade === 'Aluguel' ? `${preco}/mês` : preco;
+};
+
+const zapLink = (msg) => `https://wa.me/${CONFIG.WHATSAPP}?text=${encodeURIComponent(msg)}`;
+
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+const ICONES = {
+  cama: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 20v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8"/><path d="M2 17h20"/><path d="M6 10V7a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3"/></svg>',
+  banho: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12h16a1 1 0 0 1 1 1 7 7 0 0 1-7 7h-4a7 7 0 0 1-7-7 1 1 0 0 1 1-1z"/><path d="M6 12V5a2 2 0 0 1 2-2h1"/></svg>',
+  carro: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14l-1.5-5.5a2 2 0 0 0-1.9-1.5H8.4a2 2 0 0 0-1.9 1.5L5 17z"/><circle cx="7.5" cy="17.5" r="1.5"/><circle cx="16.5" cy="17.5" r="1.5"/></svg>',
+  area: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M3 9h18"/></svg>',
+  casa: '<svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>',
+};
+
+// ---------- Renderização de cards ----------
+function cardImovel(imovel) {
+  const fotos = Array.isArray(imovel.fotos) ? imovel.fotos : [];
+  const foto = fotos.length
+    ? `<img src="${esc(fotos[0])}" alt="${esc(imovel.titulo)}" loading="lazy">`
+    : `<div class="sem-foto">${ICONES.casa}</div>`;
+
+  const atributos = [];
+  if (imovel.quartos) atributos.push(`<span>${ICONES.cama} ${imovel.quartos} quarto${imovel.quartos > 1 ? 's' : ''}</span>`);
+  if (imovel.banheiros) atributos.push(`<span>${ICONES.banho} ${imovel.banheiros} banheiro${imovel.banheiros > 1 ? 's' : ''}</span>`);
+  if (imovel.vagas) atributos.push(`<span>${ICONES.carro} ${imovel.vagas} vaga${imovel.vagas > 1 ? 's' : ''}</span>`);
+  if (imovel.area) atributos.push(`<span>${ICONES.area} ${Number(imovel.area).toLocaleString('pt-BR')} m²</span>`);
+
+  return `
+    <article class="card-imovel" data-id="${imovel.id}">
+      <div class="card-foto">
+        <div class="card-badges">
+          <span class="badge ${imovel.finalidade === 'Aluguel' ? 'aluguel' : ''}">${esc(imovel.finalidade)}</span>
+          ${imovel.aceita_financiamento ? '<span class="badge financia">Financia</span>' : ''}
+        </div>
+        ${foto}
+      </div>
+      <div class="card-corpo">
+        <span class="tipo-bairro">${esc(imovel.tipo)}${imovel.bairro ? ' · ' + esc(imovel.bairro) : ''}</span>
+        <h3>${esc(imovel.titulo)}</h3>
+        <span class="codigo">Código: ${imovel.codigo}</span>
+        ${atributos.length ? `<div class="card-atributos">${atributos.join('')}</div>` : '<div class="card-atributos"><span>Consulte detalhes</span></div>'}
+        <div class="card-preco">
+          <span class="valor">${fmtPreco(imovel.preco, imovel.finalidade)}</span>
+          <span class="rotulo-preco">${imovel.finalidade === 'Aluguel' ? 'Valor do aluguel' : 'Valor de venda'}</span>
+        </div>
+      </div>
+    </article>`;
+}
+
+function renderizar(lista, alvo, msgVazio) {
+  const el = document.getElementById(alvo);
+  el.innerHTML = lista.length ? lista.map(cardImovel).join('') : `<p class="vazio">${msgVazio}</p>`;
+  el.querySelectorAll('.card-imovel').forEach((card) => {
+    card.addEventListener('click', () => abrirModal(card.dataset.id));
+  });
+}
+
+// ---------- Carregamento ----------
+async function carregarImoveis() {
+  const { data, error } = await sb
+    .from('imoveis')
+    .select('*')
+    .eq('ativo', true)
+    .order('destaque', { ascending: false })
+    .order('criado_em', { ascending: false });
+
+  if (error) {
+    console.error('Erro ao carregar imóveis:', error);
+    document.getElementById('grade-imoveis').innerHTML = '<p class="vazio">Não foi possível carregar os imóveis. Tente novamente mais tarde.</p>';
+    document.getElementById('grade-destaques').innerHTML = '<p class="vazio">Não foi possível carregar os destaques.</p>';
+    return;
+  }
+
+  todosImoveis = data || [];
+  renderizar(todosImoveis.filter((i) => i.destaque).slice(0, 6), 'grade-destaques', 'Nenhum destaque no momento.');
+  renderizar(todosImoveis, 'grade-imoveis', 'Nenhum imóvel disponível no momento.');
+  document.getElementById('stat-imoveis').textContent = todosImoveis.length;
+}
+
+// ---------- Busca / filtros ----------
+document.getElementById('form-busca').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const finalidade = document.getElementById('f-finalidade').value;
+  const tipo = document.getElementById('f-tipo').value;
+  const termo = document.getElementById('f-bairro').value.trim().toLowerCase();
+
+  const filtrados = todosImoveis.filter((i) => {
+    if (finalidade && i.finalidade !== finalidade) return false;
+    if (tipo && i.tipo !== tipo) return false;
+    if (termo) {
+      const alvo = `${i.titulo} ${i.bairro || ''} ${i.descricao || ''} ${i.endereco || ''}`.toLowerCase();
+      if (!alvo.includes(termo)) return false;
+    }
+    return true;
+  });
+
+  renderizar(filtrados, 'grade-imoveis', 'Nenhum imóvel encontrado com esses filtros.');
+  document.getElementById('resultado-info').textContent =
+    `${filtrados.length} imóve${filtrados.length === 1 ? 'l encontrado' : 'is encontrados'}.`;
+  document.getElementById('imoveis').scrollIntoView({ behavior: 'smooth' });
+});
+
+// ---------- Modal ----------
+function abrirModal(id) {
+  const imovel = todosImoveis.find((i) => i.id === id);
+  if (!imovel) return;
+
+  fotosModal = Array.isArray(imovel.fotos) ? imovel.fotos : [];
+  fotoAtual = 0;
+
+  const atributos = [];
+  if (imovel.quartos) atributos.push(`<span class="atributo">${ICONES.cama} ${imovel.quartos} quarto${imovel.quartos > 1 ? 's' : ''}</span>`);
+  if (imovel.banheiros) atributos.push(`<span class="atributo">${ICONES.banho} ${imovel.banheiros} banheiro${imovel.banheiros > 1 ? 's' : ''}</span>`);
+  if (imovel.vagas) atributos.push(`<span class="atributo">${ICONES.carro} ${imovel.vagas} vaga${imovel.vagas > 1 ? 's' : ''}</span>`);
+  if (imovel.area) atributos.push(`<span class="atributo">${ICONES.area} ${Number(imovel.area).toLocaleString('pt-BR')} m²</span>`);
+
+  const msg = `Olá! Tenho interesse no imóvel "${imovel.titulo}" (código ${imovel.codigo}) que vi no site CaçapavaImóveis. Pode me passar mais informações?`;
+
+  document.getElementById('modal-corpo').innerHTML = `
+    <span class="tipo-bairro">${esc(imovel.tipo)} · ${esc(imovel.bairro || imovel.cidade)} · Código ${imovel.codigo}</span>
+    <h2>${esc(imovel.titulo)}</h2>
+    <div class="preco">${fmtPreco(imovel.preco, imovel.finalidade)}</div>
+    ${atributos.length ? `<div class="modal-atributos">${atributos.join('')}</div>` : ''}
+    ${imovel.descricao ? `<p class="descricao">${esc(imovel.descricao)}</p>` : ''}
+    <a class="btn" href="${zapLink(msg)}" target="_blank" rel="noopener">&#128172; Tenho interesse — falar no WhatsApp</a>`;
+
+  renderGaleria();
+  document.getElementById('modal-fundo').classList.add('aberto');
+  document.body.style.overflow = 'hidden';
+}
+
+function renderGaleria() {
+  const galeria = document.getElementById('modal-galeria');
+  if (!fotosModal.length) {
+    galeria.innerHTML = `<div class="sem-foto">${ICONES.casa}</div>`;
+    return;
+  }
+  galeria.innerHTML = `
+    <img src="${esc(fotosModal[fotoAtual])}" alt="Foto do imóvel">
+    ${fotosModal.length > 1 ? `
+      <button class="galeria-nav ant" onclick="mudarFoto(-1)" aria-label="Foto anterior">&#10094;</button>
+      <button class="galeria-nav prox" onclick="mudarFoto(1)" aria-label="Próxima foto">&#10095;</button>
+      <span class="galeria-contador">${fotoAtual + 1} / ${fotosModal.length}</span>` : ''}`;
+}
+
+window.mudarFoto = (dir) => {
+  fotoAtual = (fotoAtual + dir + fotosModal.length) % fotosModal.length;
+  renderGaleria();
+};
+
+function fecharModal() {
+  document.getElementById('modal-fundo').classList.remove('aberto');
+  document.body.style.overflow = '';
+}
+document.getElementById('modal-fechar').addEventListener('click', fecharModal);
+document.getElementById('modal-fundo').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) fecharModal();
+});
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') fecharModal(); });
+
+// ---------- Menu mobile ----------
+document.getElementById('menu-toggle').addEventListener('click', () => {
+  document.getElementById('nav').classList.toggle('aberto');
+});
+
+// ---------- Contatos dinâmicos ----------
+(function contatos() {
+  const msgGeral = 'Olá! Vim pelo site CaçapavaImóveis e gostaria de mais informações.';
+  const msgAnuncio = 'Olá! Gostaria de anunciar meu imóvel com a CaçapavaImóveis.';
+  document.getElementById('topbar-telefone').href = zapLink(msgGeral);
+  document.getElementById('topbar-telefone').innerHTML = `&#128222; ${CONFIG.TELEFONE_EXIBICAO}`;
+  document.getElementById('zap-flutuante').href = zapLink(msgGeral);
+  document.getElementById('nav-anunciar').href = zapLink(msgAnuncio);
+  document.getElementById('cta-anunciar-btn').href = zapLink(msgAnuncio);
+  document.getElementById('rodape-telefone').textContent = CONFIG.TELEFONE_EXIBICAO;
+  document.getElementById('rodape-email').textContent = CONFIG.EMAIL_CONTATO;
+  document.getElementById('rodape-cidade').textContent = CONFIG.CIDADE;
+  document.getElementById('ano').textContent = new Date().getFullYear();
+})();
+
+carregarImoveis();

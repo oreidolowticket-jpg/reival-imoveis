@@ -1,0 +1,408 @@
+/* ============================================================
+   CaçapavaImóveis — Folha de estilos principal
+   Identidade visual centralizada nas variáveis abaixo:
+   troque as cores aqui quando a marca for definida.
+   ============================================================ */
+:root {
+  --laranja-600: #ea580c;
+  --laranja-500: #f4630b;
+  --laranja-400: #fb8332;
+  --laranja-100: #ffedd5;
+  --laranja-50: #fff7ed;
+  --escuro-900: #1c1917;
+  --escuro-700: #44403c;
+  --cinza-500: #78716c;
+  --cinza-300: #d6d3d1;
+  --cinza-100: #f5f5f4;
+  --branco: #ffffff;
+  --verde: #16a34a;
+  --sombra: 0 10px 30px rgba(28, 25, 23, 0.10);
+  --sombra-suave: 0 4px 14px rgba(28, 25, 23, 0.07);
+  --raio: 16px;
+  --fonte: 'Poppins', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--fonte);
+  color: var(--escuro-900);
+  background: var(--branco);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; }
+input, select, textarea { font-family: inherit; font-size: 1rem; }
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+/* ---------- Topbar ---------- */
+.topbar {
+  background: var(--escuro-900);
+  color: #e7e5e4;
+  font-size: 0.8rem;
+  padding: 8px 0;
+}
+.topbar .container { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.topbar a { color: var(--laranja-400); font-weight: 600; }
+
+/* ---------- Header / Nav ---------- */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--branco);
+  box-shadow: var(--sombra-suave);
+}
+.header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  gap: 16px;
+}
+.logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.3rem; }
+.logo .logo-icone {
+  width: 42px; height: 42px;
+  background: linear-gradient(135deg, var(--laranja-500), var(--laranja-600));
+  border-radius: 12px;
+  display: grid; place-items: center;
+  color: #fff;
+}
+.logo .logo-texto span { color: var(--laranja-600); }
+.nav { display: flex; align-items: center; gap: 26px; }
+.nav a { font-weight: 500; font-size: 0.95rem; transition: color .2s; }
+.nav a:hover { color: var(--laranja-600); }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--laranja-600);
+  color: #fff !important;
+  font-weight: 600;
+  border: none;
+  border-radius: 999px;
+  padding: 11px 24px;
+  font-size: 0.95rem;
+  transition: transform .15s, box-shadow .15s, background .2s;
+  box-shadow: 0 6px 18px rgba(234, 88, 12, .35);
+}
+.btn:hover { background: var(--laranja-500); transform: translateY(-2px); }
+.btn-claro { background: #fff; color: var(--laranja-600) !important; box-shadow: var(--sombra-suave); }
+.btn-claro:hover { background: var(--laranja-50); }
+.btn-fantasma { background: transparent; color: var(--escuro-700) !important; box-shadow: none; border: 1.5px solid var(--cinza-300); }
+.btn-fantasma:hover { background: var(--cinza-100); }
+.menu-toggle { display: none; background: none; border: none; font-size: 1.6rem; color: var(--escuro-900); }
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative;
+  background:
+    radial-gradient(1100px 500px at 85% -10%, rgba(244, 99, 11, .35), transparent 60%),
+    radial-gradient(900px 420px at -10% 110%, rgba(244, 99, 11, .22), transparent 55%),
+    linear-gradient(160deg, #292524 0%, var(--escuro-900) 65%);
+  color: #fff;
+  padding: 90px 0 130px;
+  overflow: hidden;
+}
+.hero::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,.06) 1.5px, transparent 1.5px);
+  background-size: 28px 28px;
+  pointer-events: none;
+}
+.hero .container { position: relative; z-index: 1; }
+.hero-conteudo { max-width: 640px; }
+.hero .selo {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(244, 99, 11, .15);
+  border: 1px solid rgba(244, 99, 11, .5);
+  color: var(--laranja-400);
+  font-size: .8rem; font-weight: 600;
+  border-radius: 999px;
+  padding: 6px 16px;
+  margin-bottom: 20px;
+}
+.hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.15; font-weight: 700; }
+.hero h1 span { color: var(--laranja-400); }
+.hero p.sub { margin-top: 16px; color: #d6d3d1; font-size: 1.05rem; max-width: 520px; }
+
+/* ---------- Caixa de busca ---------- */
+.busca {
+  margin-top: -70px;
+  position: relative;
+  z-index: 5;
+}
+.busca-card {
+  background: var(--branco);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra);
+  padding: 22px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.4fr auto;
+  gap: 14px;
+  align-items: end;
+}
+.campo label { display: block; font-size: .78rem; font-weight: 600; color: var(--cinza-500); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px; }
+.campo select, .campo input {
+  width: 100%;
+  border: 1.5px solid var(--cinza-300);
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: var(--branco);
+  color: var(--escuro-900);
+  outline: none;
+  transition: border-color .2s;
+}
+.campo select:focus, .campo input:focus { border-color: var(--laranja-500); }
+.busca-card .btn { padding: 13px 30px; border-radius: 10px; }
+
+/* ---------- Seções ---------- */
+.secao { padding: 70px 0; }
+.secao-cabecalho { text-align: center; max-width: 620px; margin: 0 auto 44px; }
+.secao-cabecalho .rotulo { color: var(--laranja-600); font-weight: 600; font-size: .85rem; text-transform: uppercase; letter-spacing: .08em; }
+.secao-cabecalho h2 { font-size: clamp(1.6rem, 3.5vw, 2.2rem); font-weight: 700; margin-top: 6px; }
+.secao-cabecalho p { color: var(--cinza-500); margin-top: 10px; }
+.secao-alt { background: var(--cinza-100); }
+
+/* ---------- Cards de imóveis ---------- */
+.grade-imoveis {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 26px;
+}
+.card-imovel {
+  background: var(--branco);
+  border-radius: var(--raio);
+  overflow: hidden;
+  box-shadow: var(--sombra-suave);
+  transition: transform .2s, box-shadow .2s;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+.card-imovel:hover { transform: translateY(-6px); box-shadow: var(--sombra); }
+.card-foto {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: linear-gradient(135deg, var(--laranja-100), var(--cinza-100));
+  overflow: hidden;
+}
+.card-foto img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s; }
+.card-imovel:hover .card-foto img { transform: scale(1.05); }
+.card-foto .sem-foto {
+  width: 100%; height: 100%;
+  display: grid; place-items: center;
+  color: var(--laranja-400);
+}
+.card-badges { position: absolute; top: 12px; left: 12px; display: flex; gap: 8px; z-index: 2; }
+.badge {
+  font-size: .72rem; font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--laranja-600);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.badge.aluguel { background: var(--escuro-700); }
+.badge.financia { background: var(--verde); }
+.card-corpo { padding: 20px; display: flex; flex-direction: column; flex: 1; }
+.card-corpo .tipo-bairro { font-size: .8rem; color: var(--cinza-500); font-weight: 500; }
+.card-corpo h3 { font-size: 1.05rem; font-weight: 600; margin: 4px 0 2px; line-height: 1.35; }
+.card-corpo .codigo { font-size: .78rem; color: var(--cinza-500); }
+.card-atributos {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  margin: 14px 0;
+  padding: 12px 0;
+  border-top: 1px solid var(--cinza-100);
+  border-bottom: 1px solid var(--cinza-100);
+  font-size: .84rem; color: var(--escuro-700);
+}
+.card-atributos span { display: inline-flex; align-items: center; gap: 6px; }
+.card-atributos svg { color: var(--laranja-600); flex-shrink: 0; }
+.card-preco { margin-top: auto; display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.card-preco .valor { font-size: 1.3rem; font-weight: 700; color: var(--laranja-600); }
+.card-preco .rotulo-preco { font-size: .75rem; color: var(--cinza-500); }
+.vazio { text-align: center; color: var(--cinza-500); padding: 40px 0; grid-column: 1 / -1; }
+
+/* ---------- Números / stats ---------- */
+.faixa-stats {
+  background: linear-gradient(120deg, var(--laranja-600), var(--laranja-500));
+  color: #fff;
+  padding: 46px 0;
+}
+.faixa-stats .container { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 24px; text-align: center; }
+.stat .numero { font-size: 2rem; font-weight: 700; }
+.stat .desc { font-size: .9rem; opacity: .9; }
+
+/* ---------- Diferenciais ---------- */
+.diferenciais { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+.diferencial {
+  background: var(--branco);
+  border-radius: var(--raio);
+  padding: 28px;
+  box-shadow: var(--sombra-suave);
+}
+.diferencial .icone {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  background: var(--laranja-50);
+  color: var(--laranja-600);
+  display: grid; place-items: center;
+  margin-bottom: 16px;
+}
+.diferencial h3 { font-size: 1.05rem; margin-bottom: 8px; }
+.diferencial p { font-size: .9rem; color: var(--cinza-500); }
+
+/* ---------- CTA anuncie ---------- */
+.cta-anuncie {
+  background: var(--escuro-900);
+  border-radius: var(--raio);
+  color: #fff;
+  padding: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  flex-wrap: wrap;
+  position: relative;
+  overflow: hidden;
+}
+.cta-anuncie::before {
+  content: '';
+  position: absolute; right: -80px; top: -80px;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(244,99,11,.4), transparent 70%);
+}
+.cta-anuncie h2 { font-size: clamp(1.4rem, 3vw, 1.9rem); position: relative; }
+.cta-anuncie p { color: #d6d3d1; margin-top: 8px; position: relative; }
+
+/* ---------- Rodapé ---------- */
+.rodape { background: var(--escuro-900); color: #d6d3d1; padding: 60px 0 0; margin-top: 70px; }
+.rodape-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 40px; padding-bottom: 40px; }
+.rodape h4 { color: #fff; font-size: 1rem; margin-bottom: 14px; }
+.rodape ul { list-style: none; display: grid; gap: 8px; font-size: .9rem; }
+.rodape a:hover { color: var(--laranja-400); }
+.rodape .sobre-rodape { font-size: .9rem; max-width: 320px; margin-top: 12px; }
+.rodape-base {
+  border-top: 1px solid rgba(255,255,255,.1);
+  padding: 18px 0;
+  font-size: .8rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ---------- Botão WhatsApp flutuante ---------- */
+.zap-flutuante {
+  position: fixed;
+  right: 22px; bottom: 22px;
+  width: 58px; height: 58px;
+  border-radius: 50%;
+  background: #25d366;
+  display: grid; place-items: center;
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(37, 211, 102, .45);
+  z-index: 60;
+  transition: transform .2s;
+}
+.zap-flutuante:hover { transform: scale(1.1); }
+
+/* ---------- Modal de detalhes ---------- */
+.modal-fundo {
+  position: fixed; inset: 0;
+  background: rgba(28, 25, 23, .7);
+  z-index: 100;
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 30px 16px;
+  overflow-y: auto;
+}
+.modal-fundo.aberto { display: flex; }
+.modal {
+  background: var(--branco);
+  border-radius: var(--raio);
+  max-width: 860px;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  animation: subir .25s ease;
+}
+@keyframes subir { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+.modal-fechar {
+  position: absolute; top: 14px; right: 14px;
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(28,25,23,.55);
+  color: #fff;
+  font-size: 1.2rem;
+  z-index: 5;
+}
+.galeria { position: relative; aspect-ratio: 16 / 9; background: var(--cinza-100); }
+.galeria img { width: 100%; height: 100%; object-fit: cover; }
+.galeria .sem-foto { width: 100%; height: 100%; display: grid; place-items: center; color: var(--laranja-400); }
+.galeria-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,.9);
+  color: var(--escuro-900);
+  font-size: 1.1rem;
+  display: grid; place-items: center;
+}
+.galeria-nav.ant { left: 14px; }
+.galeria-nav.prox { right: 14px; }
+.galeria-contador {
+  position: absolute; bottom: 12px; right: 14px;
+  background: rgba(28,25,23,.65);
+  color: #fff;
+  font-size: .78rem;
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+.modal-corpo { padding: 28px; }
+.modal-corpo .tipo-bairro { color: var(--cinza-500); font-size: .85rem; }
+.modal-corpo h2 { font-size: 1.5rem; margin: 4px 0; }
+.modal-corpo .preco { font-size: 1.7rem; font-weight: 700; color: var(--laranja-600); margin: 10px 0; }
+.modal-atributos { display: flex; gap: 20px; flex-wrap: wrap; margin: 16px 0; }
+.modal-atributos .atributo {
+  background: var(--cinza-100);
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: .88rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.modal-atributos svg { color: var(--laranja-600); }
+.modal-corpo .descricao { color: var(--escuro-700); font-size: .95rem; white-space: pre-line; margin: 16px 0 24px; }
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 900px) {
+  .busca-card { grid-template-columns: 1fr 1fr; }
+  .busca-card .btn { grid-column: 1 / -1; }
+  .rodape-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 640px) {
+  .nav {
+    display: none;
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    background: var(--branco);
+    flex-direction: column;
+    padding: 20px;
+    box-shadow: var(--sombra);
+    gap: 16px;
+  }
+  .nav.aberto { display: flex; }
+  .menu-toggle { display: block; }
+  .busca-card { grid-template-columns: 1fr; }
+  .hero { padding: 60px 0 110px; }
+  .rodape-grid { grid-template-columns: 1fr; }
+  .cta-anuncie { padding: 32px 24px; }
+}

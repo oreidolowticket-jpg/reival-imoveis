@@ -129,7 +129,7 @@ function cardSimilar(i) {
         ${foto}
       </div>
       <div class="card-corpo">
-        <span class="tipo-bairro">${esc([i.tipo, [i.bairro, i.cidade].filter(Boolean).join(', ')].filter(Boolean).join(' · '))}</span>
+        <span class="tipo-bairro">${esc(i.tipo)}</span>
         <h3>${esc(tituloImovel(i))}</h3>
         <span class="codigo">Código: ${i.codigo}</span>
         <div class="card-preco" style="margin-top:12px;">

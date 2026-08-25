@@ -49,7 +49,7 @@ function cardImovel(imovel) {
         ${foto}
       </div>
       <div class="card-corpo">
-        <span class="tipo-bairro">${esc([imovel.tipo, [imovel.bairro, imovel.cidade].filter(Boolean).join(', ')].filter(Boolean).join(' · '))}</span>
+        <span class="tipo-bairro">${esc(imovel.tipo)}</span>
         <h3>${esc(tituloImovel(imovel))}</h3>
         <span class="codigo">Código: ${imovel.codigo}</span>
         ${atributos.length ? `<div class="card-atributos">${atributos.join('')}</div>` : '<div class="card-atributos"><span>Consulte detalhes</span></div>'}

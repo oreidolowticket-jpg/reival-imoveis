@@ -158,10 +158,30 @@
     .toast.visivel { transform: translateX(-50%) translateY(0); }
 
     @media (max-width: 640px) {
-      .linha-imovel { grid-template-columns: 70px 1fr; }
+      .conteudo { padding: 20px 14px 50px; }
+      .painel-topo { padding: 12px 14px; }
+      .email-admin { display: none; }
+
+      .cards-resumo { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 22px; }
+      .card-resumo { padding: 14px 16px; }
+      .card-resumo .num { font-size: 1.4rem; }
+
+      .barra-acoes { flex-direction: column; align-items: stretch; gap: 10px; }
+      .barra-acoes .btn { width: 100%; }
+      .busca-admin { max-width: none; }
+
+      .linha-imovel, .linha-imovel.linha-banner { grid-template-columns: 92px 1fr; gap: 8px 12px; padding: 12px 14px; }
+      .linha-imovel .linha-foto, .linha-banner .linha-foto { width: 92px; height: 58px; }
+      .linha-info h3 { font-size: .9rem; }
+      .linha-info .meta { font-size: .74rem; gap: 8px; }
       .linha-acoes { grid-column: 1 / -1; justify-content: flex-start; }
+      .linha-acoes .btn-mini { flex: 1; text-align: center; padding: 8px 6px; }
+
       .grade-form { grid-template-columns: 1fr; }
-      .modal-form { padding: 22px; }
+      .modal-fundo { padding: 14px 10px; }
+      .modal-form { padding: 20px 16px; }
+      .form-acoes { flex-wrap: wrap; }
+      .form-acoes .btn { flex: 1; }
     }
   </style>
 </head>

@@ -171,6 +171,7 @@ function abrirForm(imovel) {
   if (imovel) {
     $('form-titulo').textContent = `Editar imóvel — cód. ${imovel.codigo}`;
     $('i-id').value = imovel.id;
+    $('i-codigo').value = imovel.codigo ?? '';
     $('i-titulo').value = imovel.titulo || '';
     $('i-tipo').value = imovel.tipo || 'Casa';
     $('i-finalidade').value = imovel.finalidade || 'Venda';
@@ -237,13 +238,38 @@ window.removerFoto = (idx) => {
   renderPreviews();
 };
 
+// Redimensiona para no máx. 1600px e converte para JPEG (~80%),
+// reduzindo muito o espaço e o tráfego no Supabase Storage.
+async function comprimirImagem(file) {
+  if (!/^image\/(jpeg|png|webp)$/i.test(file.type)) return file;
+  const img = await createImageBitmap(file).catch(() => null);
+  if (!img) return file;
+  const MAX = 1600;
+  const escala = Math.min(1, MAX / Math.max(img.width, img.height));
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.round(img.width * escala);
+  canvas.height = Math.round(img.height * escala);
+  canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+  img.close();
+  const blob = await new Promise((res) => canvas.toBlob(res, 'image/jpeg', 0.82));
+  return blob && blob.size < file.size ? blob : file;
+}
+
 async function uploadFotos() {
   const urls = [];
   for (const f of fotosForm) {
     if (f.url) { urls.push(f.url); continue; }
-    const ext = (f.file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+    const arquivo = await comprimirImagem(f.file);
+    const comprimido = arquivo !== f.file;
+    const ext = comprimido
+      ? 'jpg'
+      : ((f.file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg');
     const caminho = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-    const { error } = await sb.storage.from('fotos').upload(caminho, f.file, { cacheControl: '3600', upsert: false });
+    const { error } = await sb.storage.from('fotos').upload(caminho, arquivo, {
+      cacheControl: '31536000',
+      contentType: comprimido ? 'image/jpeg' : (f.file.type || undefined),
+      upsert: false,
+    });
     if (error) throw new Error(`Falha no upload de "${f.file.name}": ${error.message}`);
     const { data } = sb.storage.from('fotos').getPublicUrl(caminho);
     urls.push(data.publicUrl);
@@ -267,6 +293,7 @@ $('form-imovel').addEventListener('submit', async (e) => {
     const numOuNull = (id) => { const v = $(id).value; return v === '' ? null : Number(v); };
     const registro = {
       titulo: $('i-titulo').value.trim(),
+      ...($('i-codigo').value !== '' ? { codigo: Number($('i-codigo').value) } : {}),
       tipo: $('i-tipo').value,
       finalidade: $('i-finalidade').value,
       bairro: $('i-bairro').value.trim() || null,
@@ -284,10 +311,24 @@ $('form-imovel').addEventListener('submit', async (e) => {
     };
 
     const id = $('i-id').value;
-    const { error } = id
+    let resp = id
       ? await sb.from('imoveis').update(registro).eq('id', id)
       : await sb.from('imoveis').insert(registro);
-    if (error) throw error;
+
+    // Sem código manual: se o número gerado colidir com um definido à mão,
+    // reinsere (a sequência avança a cada tentativa)
+    if (!id && !('codigo' in registro)) {
+      let tentativas = 0;
+      while (resp.error && resp.error.code === '23505' && tentativas < 5) {
+        resp = await sb.from('imoveis').insert(registro);
+        tentativas++;
+      }
+    }
+
+    if (resp.error) {
+      if (resp.error.code === '23505') throw new Error('Este código já está em uso por outro imóvel. Escolha outro número.');
+      throw resp.error;
+    }
 
     toast(id ? 'Imóvel atualizado!' : 'Imóvel cadastrado!');
     fecharForm();

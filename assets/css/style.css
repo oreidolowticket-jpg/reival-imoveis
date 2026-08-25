@@ -312,41 +312,26 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 }
 .zap-flutuante:hover { transform: scale(1.1); }
 
-/* ---------- Modal de detalhes ---------- */
-.modal-fundo {
-  position: fixed; inset: 0;
-  background: rgba(28, 25, 23, .7);
-  z-index: 100;
-  display: none;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 30px 16px;
-  overflow-y: auto;
+/* ---------- Página do imóvel ---------- */
+.fundo-claro { background: var(--cinza-100); }
+.pagina-imovel { padding: 26px 0 60px; }
+.breadcrumb {
+  font-size: .82rem; color: var(--cinza-500);
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-bottom: 18px;
 }
-.modal-fundo.aberto { display: flex; }
-.modal {
-  background: var(--branco);
-  border-radius: var(--raio);
-  max-width: 860px;
-  width: 100%;
-  overflow: hidden;
+.breadcrumb a:hover { color: var(--laranja-600); }
+.imovel-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 28px; align-items: start; }
+
+.galeria-pagina .principal {
   position: relative;
-  animation: subir .25s ease;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--raio);
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--laranja-100), var(--cinza-100));
 }
-@keyframes subir { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
-.modal-fechar {
-  position: absolute; top: 14px; right: 14px;
-  width: 38px; height: 38px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(28,25,23,.55);
-  color: #fff;
-  font-size: 1.2rem;
-  z-index: 5;
-}
-.galeria { position: relative; aspect-ratio: 16 / 9; background: var(--cinza-100); }
-.galeria img { width: 100%; height: 100%; object-fit: cover; }
-.galeria .sem-foto { width: 100%; height: 100%; display: grid; place-items: center; color: var(--laranja-400); }
+.galeria-pagina .principal img { width: 100%; height: 100%; object-fit: cover; }
+.galeria-pagina .sem-foto { width: 100%; height: 100%; display: grid; place-items: center; color: var(--laranja-400); }
 .galeria-nav {
   position: absolute; top: 50%; transform: translateY(-50%);
   width: 42px; height: 42px;
@@ -356,6 +341,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   color: var(--escuro-900);
   font-size: 1.1rem;
   display: grid; place-items: center;
+  box-shadow: var(--sombra-suave);
 }
 .galeria-nav.ant { left: 14px; }
 .galeria-nav.prox { right: 14px; }
@@ -367,26 +353,48 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   padding: 4px 12px;
   border-radius: 999px;
 }
-.modal-corpo { padding: 28px; }
-.modal-corpo .tipo-bairro { color: var(--cinza-500); font-size: .85rem; }
-.modal-corpo h2 { font-size: 1.5rem; margin: 4px 0; }
-.modal-corpo .preco { font-size: 1.7rem; font-weight: 700; color: var(--laranja-600); margin: 10px 0; }
-.modal-atributos { display: flex; gap: 20px; flex-wrap: wrap; margin: 16px 0; }
-.modal-atributos .atributo {
+.miniaturas { display: flex; gap: 10px; margin-top: 12px; overflow-x: auto; padding-bottom: 4px; }
+.miniatura {
+  width: 92px; aspect-ratio: 4 / 3;
+  border-radius: 10px; overflow: hidden;
+  border: 2.5px solid transparent;
+  cursor: pointer; flex-shrink: 0;
+  padding: 0; background: none;
+}
+.miniatura img { width: 100%; height: 100%; object-fit: cover; }
+.miniatura.ativa { border-color: var(--laranja-600); }
+
+.painel-lateral { position: sticky; top: 96px; display: grid; gap: 18px; }
+.cartao-info { background: var(--branco); border-radius: var(--raio); box-shadow: var(--sombra-suave); padding: 26px; }
+.cartao-info .tipo-bairro { color: var(--cinza-500); font-size: .85rem; }
+.cartao-info h1 { font-size: 1.35rem; line-height: 1.3; margin: 4px 0; }
+.cartao-info .preco-grande { font-size: 1.9rem; font-weight: 700; color: var(--laranja-600); margin: 12px 0 0; }
+.cartao-info .rotulo-preco { font-size: .8rem; color: var(--cinza-500); }
+.atributos-grade { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 18px 0; }
+.atributo-chip {
   background: var(--cinza-100);
   border-radius: 10px;
-  padding: 10px 16px;
-  font-size: .88rem;
+  padding: 10px 14px;
+  font-size: .85rem;
   display: flex; align-items: center; gap: 8px;
 }
-.modal-atributos svg { color: var(--laranja-600); }
-.modal-corpo .descricao { color: var(--escuro-700); font-size: .95rem; white-space: pre-line; margin: 16px 0 24px; }
+.atributo-chip svg { color: var(--laranja-600); flex-shrink: 0; }
+.cartao-info .btn { width: 100%; margin-top: 6px; }
+.cartao-info .obs-codigo { text-align: center; font-size: .78rem; color: var(--cinza-500); margin-top: 12px; }
+.bloco-descricao { background: var(--branco); border-radius: var(--raio); box-shadow: var(--sombra-suave); padding: 26px; margin-top: 22px; }
+.bloco-descricao h2 { font-size: 1.1rem; margin-bottom: 10px; }
+.bloco-descricao p { color: var(--escuro-700); font-size: .95rem; white-space: pre-line; }
+.aviso-nao-encontrado { text-align: center; padding: 90px 20px; }
+.aviso-nao-encontrado h1 { font-size: 1.5rem; margin-bottom: 10px; }
+.aviso-nao-encontrado p { color: var(--cinza-500); margin-bottom: 24px; }
 
 /* ---------- Responsivo ---------- */
 @media (max-width: 900px) {
   .busca-card { grid-template-columns: 1fr 1fr; }
   .busca-card .btn { grid-column: 1 / -1; }
   .rodape-grid { grid-template-columns: 1fr 1fr; }
+  .imovel-grid { grid-template-columns: 1fr; }
+  .painel-lateral { position: static; }
 }
 @media (max-width: 640px) {
   .nav {

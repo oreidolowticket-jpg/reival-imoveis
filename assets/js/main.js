@@ -4,8 +4,6 @@
 const sb = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
 
 let todosImoveis = [];
-let fotoAtual = 0;
-let fotosModal = [];
 
 // ---------- Utilitários ----------
 const fmtPreco = (valor, finalidade) => {
@@ -40,7 +38,7 @@ function cardImovel(imovel) {
   if (imovel.area) atributos.push(`<span>${ICONES.area} ${Number(imovel.area).toLocaleString('pt-BR')} m²</span>`);
 
   return `
-    <article class="card-imovel" data-id="${imovel.id}">
+    <a class="card-imovel" href="imovel.html?id=${imovel.id}" target="_blank" rel="noopener">
       <div class="card-foto">
         <div class="card-badges">
           <span class="badge ${imovel.finalidade === 'Aluguel' ? 'aluguel' : ''}">${esc(imovel.finalidade)}</span>
@@ -58,15 +56,12 @@ function cardImovel(imovel) {
           <span class="rotulo-preco">${imovel.finalidade === 'Aluguel' ? 'Valor do aluguel' : 'Valor de venda'}</span>
         </div>
       </div>
-    </article>`;
+    </a>`;
 }
 
 function renderizar(lista, alvo, msgVazio) {
   const el = document.getElementById(alvo);
   el.innerHTML = lista.length ? lista.map(cardImovel).join('') : `<p class="vazio">${msgVazio}</p>`;
-  el.querySelectorAll('.card-imovel').forEach((card) => {
-    card.addEventListener('click', () => abrirModal(card.dataset.id));
-  });
 }
 
 // ---------- Carregamento ----------
@@ -113,64 +108,6 @@ document.getElementById('form-busca').addEventListener('submit', (e) => {
     `${filtrados.length} imóve${filtrados.length === 1 ? 'l encontrado' : 'is encontrados'}.`;
   document.getElementById('imoveis').scrollIntoView({ behavior: 'smooth' });
 });
-
-// ---------- Modal ----------
-function abrirModal(id) {
-  const imovel = todosImoveis.find((i) => i.id === id);
-  if (!imovel) return;
-
-  fotosModal = Array.isArray(imovel.fotos) ? imovel.fotos : [];
-  fotoAtual = 0;
-
-  const atributos = [];
-  if (imovel.quartos) atributos.push(`<span class="atributo">${ICONES.cama} ${imovel.quartos} quarto${imovel.quartos > 1 ? 's' : ''}</span>`);
-  if (imovel.banheiros) atributos.push(`<span class="atributo">${ICONES.banho} ${imovel.banheiros} banheiro${imovel.banheiros > 1 ? 's' : ''}</span>`);
-  if (imovel.vagas) atributos.push(`<span class="atributo">${ICONES.carro} ${imovel.vagas} vaga${imovel.vagas > 1 ? 's' : ''}</span>`);
-  if (imovel.area) atributos.push(`<span class="atributo">${ICONES.area} ${Number(imovel.area).toLocaleString('pt-BR')} m²</span>`);
-
-  const msg = `Olá! Tenho interesse no imóvel "${imovel.titulo}" (código ${imovel.codigo}) que vi no site CaçapavaImóveis. Pode me passar mais informações?`;
-
-  document.getElementById('modal-corpo').innerHTML = `
-    <span class="tipo-bairro">${esc(imovel.tipo)} · ${esc(imovel.bairro || imovel.cidade)} · Código ${imovel.codigo}</span>
-    <h2>${esc(imovel.titulo)}</h2>
-    <div class="preco">${fmtPreco(imovel.preco, imovel.finalidade)}</div>
-    ${atributos.length ? `<div class="modal-atributos">${atributos.join('')}</div>` : ''}
-    ${imovel.descricao ? `<p class="descricao">${esc(imovel.descricao)}</p>` : ''}
-    <a class="btn" href="${zapLink(msg)}" target="_blank" rel="noopener">&#128172; Tenho interesse — falar no WhatsApp</a>`;
-
-  renderGaleria();
-  document.getElementById('modal-fundo').classList.add('aberto');
-  document.body.style.overflow = 'hidden';
-}
-
-function renderGaleria() {
-  const galeria = document.getElementById('modal-galeria');
-  if (!fotosModal.length) {
-    galeria.innerHTML = `<div class="sem-foto">${ICONES.casa}</div>`;
-    return;
-  }
-  galeria.innerHTML = `
-    <img src="${esc(fotosModal[fotoAtual])}" alt="Foto do imóvel">
-    ${fotosModal.length > 1 ? `
-      <button class="galeria-nav ant" onclick="mudarFoto(-1)" aria-label="Foto anterior">&#10094;</button>
-      <button class="galeria-nav prox" onclick="mudarFoto(1)" aria-label="Próxima foto">&#10095;</button>
-      <span class="galeria-contador">${fotoAtual + 1} / ${fotosModal.length}</span>` : ''}`;
-}
-
-window.mudarFoto = (dir) => {
-  fotoAtual = (fotoAtual + dir + fotosModal.length) % fotosModal.length;
-  renderGaleria();
-};
-
-function fecharModal() {
-  document.getElementById('modal-fundo').classList.remove('aberto');
-  document.body.style.overflow = '';
-}
-document.getElementById('modal-fechar').addEventListener('click', fecharModal);
-document.getElementById('modal-fundo').addEventListener('click', (e) => {
-  if (e.target === e.currentTarget) fecharModal();
-});
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') fecharModal(); });
 
 // ---------- Menu mobile ----------
 document.getElementById('menu-toggle').addEventListener('click', () => {

@@ -108,7 +108,7 @@ document.getElementById('form-busca').addEventListener('submit', (e) => {
     if (tipo && i.tipo !== tipo) return false;
     if (cidade && i.cidade !== cidade) return false;
     if (termo) {
-      const alvo = `${i.titulo} ${i.bairro || ''} ${i.cidade || ''} ${i.descricao || ''} ${i.endereco || ''}`.toLowerCase();
+      const alvo = `${i.titulo} ${i.codigo || ''} ${i.bairro || ''} ${i.cidade || ''} ${i.descricao || ''} ${i.endereco || ''}`.toLowerCase();
       if (!alvo.includes(termo)) return false;
     }
     return true;

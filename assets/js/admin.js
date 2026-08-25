@@ -11,6 +11,25 @@ const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const fmtPreco = (v) => v == null ? 'Consulte' : Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
+// ---------- Máscara de preço (1.000.000 ou 1.000.000,50) ----------
+function formatarPrecoDigitado(valor) {
+  let v = String(valor).replace(/[^\d,]/g, '');
+  const temVirgula = v.includes(',');
+  const [inteiro, ...resto] = v.split(',');
+  const dec = resto.join('').slice(0, 2);
+  const intFmt = inteiro.replace(/^0+(?=\d)/, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  return intFmt + (temVirgula ? ',' + dec : '');
+}
+
+function parsearPreco(texto) {
+  const v = String(texto).trim().replace(/\./g, '').replace(',', '.');
+  return v === '' ? null : Number(v);
+}
+
+function exibirPreco(preco) {
+  return preco == null ? '' : Number(preco).toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+}
+
 function toast(msg) {
   const el = $('toast');
   el.textContent = msg;
@@ -182,7 +201,7 @@ function abrirForm(imovel) {
     $('i-finalidade').value = imovel.finalidade || 'Venda';
     $('i-cidade').value = imovel.cidade || '';
     $('i-bairro').value = imovel.bairro || '';
-    $('i-preco').value = imovel.preco ?? '';
+    $('i-preco').value = exibirPreco(imovel.preco);
     $('i-quartos').value = imovel.quartos ?? '';
     $('i-banheiros').value = imovel.banheiros ?? '';
     $('i-vagas').value = imovel.vagas ?? '';
@@ -211,6 +230,10 @@ window.editarImovel = (id) => {
   const imovel = imoveis.find((i) => i.id === id);
   if (imovel) abrirForm(imovel);
 };
+
+$('i-preco').addEventListener('input', () => {
+  $('i-preco').value = formatarPrecoDigitado($('i-preco').value);
+});
 
 $('btn-novo').addEventListener('click', () => abrirForm(null));
 $('btn-fechar-form').addEventListener('click', fecharForm);
@@ -301,12 +324,12 @@ $('form-imovel').addEventListener('submit', async (e) => {
     const numOuNull = (id) => { const v = $(id).value; return v === '' ? null : Number(v); };
     const registro = {
       titulo: $('i-titulo').value.trim(),
-      ...($('i-codigo').value !== '' ? { codigo: Number($('i-codigo').value) } : {}),
+      ...($('i-codigo').value.trim() !== '' ? { codigo: $('i-codigo').value.trim().toUpperCase() } : {}),
       tipo: $('i-tipo').value,
       finalidade: $('i-finalidade').value,
       cidade: $('i-cidade').value.trim(),
       bairro: $('i-bairro').value.trim() || null,
-      preco: numOuNull('i-preco'),
+      preco: parsearPreco($('i-preco').value),
       quartos: numOuNull('i-quartos'),
       banheiros: numOuNull('i-banheiros'),
       vagas: numOuNull('i-vagas'),

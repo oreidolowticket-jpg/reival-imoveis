@@ -320,7 +320,14 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 .rodape h4 { color: #fff; font-size: 1rem; margin-bottom: 14px; }
 .rodape ul { list-style: none; display: grid; gap: 8px; font-size: .9rem; }
 .rodape a:hover { color: var(--laranja-400); }
-.rodape .sobre-rodape { font-size: .9rem; max-width: 320px; margin-top: 12px; }
+.rodape .sobre-rodape { font-size: .9rem; max-width: 320px; margin-top: 14px; }
+.logo-rodape {
+  display: inline-block;
+  background: #fff;
+  border-radius: 12px;
+  padding: 10px 18px;
+}
+.logo-rodape img { height: 52px; width: auto; display: block; }
 .rodape-base {
   border-top: 1px solid rgba(255,255,255,.1);
   padding: 18px 0;
@@ -445,7 +452,21 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   .nav.aberto { display: flex; }
   .menu-toggle { display: block; }
   .logo-img { height: 44px; }
-  .busca-card { grid-template-columns: 1fr; }
+
+  /* Filtro compacto: 2 colunas e campos menores */
+  .busca { margin-top: -54px; }
+  .busca-card { grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px; }
+  .busca-card .btn { grid-column: 1 / -1; }
+  .campo label { font-size: .66rem; margin-bottom: 4px; }
+  .campo select, .campo input { padding: 10px 12px; font-size: .9rem; }
+
+  /* Banners de ponta a ponta */
+  .secao-banners { padding: 30px 0 0; }
+  .secao-banners .container { padding: 0; }
+  .carrossel-banners { border-radius: 0; aspect-ratio: 2 / 1; box-shadow: none; }
+  .banners-pontos { margin-top: 10px; }
+
+  .logo-rodape img { height: 42px; }
   .topbar .container > span:first-child { display: none; }
   .topbar .container { justify-content: center; }
   .hero {

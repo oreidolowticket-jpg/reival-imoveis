@@ -117,7 +117,7 @@ function cardSimilar(i) {
     ? `<img src="${esc(fts[0])}" alt="${esc(i.titulo)}" loading="lazy">`
     : `<div class="sem-foto">${ICONES.casa}</div>`;
   return `
-    <a class="card-imovel" href="imovel.html?id=${i.id}">
+    <a class="card-imovel" href="imovel?id=${i.id}">
       <div class="card-foto">
         <div class="card-badges">
           <span class="badge ${i.finalidade === 'Aluguel' ? 'aluguel' : ''}">${esc(i.finalidade)}</span>

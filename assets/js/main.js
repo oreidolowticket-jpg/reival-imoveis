@@ -38,7 +38,7 @@ function cardImovel(imovel) {
   if (imovel.area) atributos.push(`<span>${ICONES.area} ${Number(imovel.area).toLocaleString('pt-BR')} m²</span>`);
 
   return `
-    <a class="card-imovel" href="imovel.html?id=${imovel.id}" target="_blank" rel="noopener">
+    <a class="card-imovel" href="imovel?id=${imovel.id}" target="_blank" rel="noopener">
       <div class="card-foto">
         <div class="card-badges">
           <span class="badge ${imovel.finalidade === 'Aluguel' ? 'aluguel' : ''}">${esc(imovel.finalidade)}</span>

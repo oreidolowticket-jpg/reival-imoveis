@@ -42,8 +42,12 @@ $('form-login').addEventListener('submit', async (e) => {
   btn.textContent = 'Entrando...';
   $('login-erro').classList.remove('visivel');
 
+  // Aceita usuário simples (ex.: "reivalacesso") ou e-mail completo
+  let usuario = $('login-email').value.trim();
+  if (!usuario.includes('@')) usuario += '@reival.site';
+
   const { data, error } = await sb.auth.signInWithPassword({
-    email: $('login-email').value.trim(),
+    email: usuario,
     password: $('login-senha').value,
   });
 
@@ -51,7 +55,7 @@ $('form-login').addEventListener('submit', async (e) => {
   btn.textContent = 'Entrar';
 
   if (error) {
-    $('login-erro').textContent = 'E-mail ou senha incorretos.';
+    $('login-erro').textContent = 'Usuário ou senha incorretos.';
     $('login-erro').classList.add('visivel');
     return;
   }

@@ -65,6 +65,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   gap: 16px;
 }
 .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.3rem; }
+.logo-img { height: 56px; width: auto; display: block; }
 .logo .logo-icone {
   width: 42px; height: 42px;
   background: linear-gradient(135deg, var(--laranja-500), var(--laranja-600));
@@ -99,9 +100,8 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 .hero {
   position: relative;
   background:
-    radial-gradient(1100px 500px at 85% -10%, rgba(244, 99, 11, .35), transparent 60%),
-    radial-gradient(900px 420px at -10% 110%, rgba(244, 99, 11, .22), transparent 55%),
-    linear-gradient(160deg, #292524 0%, var(--escuro-900) 65%);
+    linear-gradient(100deg, rgba(28, 25, 23, .93) 0%, rgba(28, 25, 23, .72) 48%, rgba(28, 25, 23, .38) 100%),
+    url('../banner.webp') center / cover no-repeat;
   color: #fff;
   padding: 90px 0 130px;
   overflow: hidden;
@@ -439,6 +439,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   }
   .nav.aberto { display: flex; }
   .menu-toggle { display: block; }
+  .logo-img { height: 44px; }
   .busca-card { grid-template-columns: 1fr; }
   .hero { padding: 60px 0 110px; }
   .rodape-grid { grid-template-columns: 1fr; }

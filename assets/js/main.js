@@ -120,6 +120,52 @@ document.getElementById('form-busca').addEventListener('submit', (e) => {
   document.getElementById('imoveis').scrollIntoView({ behavior: 'smooth' });
 });
 
+// ---------- Cards de cidades ----------
+async function carregarCidades() {
+  const { data } = await sb
+    .from('cidades')
+    .select('*')
+    .eq('ativo', true)
+    .order('ordem', { ascending: true })
+    .order('nome', { ascending: true });
+
+  if (!data || !data.length) return;
+
+  // Só mostra cidades que têm imóveis ativos; conta quantos
+  const contagem = {};
+  for (const i of todosImoveis) {
+    if (i.cidade) contagem[i.cidade] = (contagem[i.cidade] || 0) + 1;
+  }
+
+  const cidades = data.filter((c) => contagem[c.nome] > 0);
+  if (!cidades.length) return;
+
+  document.getElementById('grade-cidades').innerHTML = cidades.map((c) => {
+    const qtd = contagem[c.nome];
+    const foto = c.imagem ? `<img src="${esc(c.imagem)}" alt="Imóveis em ${esc(c.nome)}" loading="lazy">` : '';
+    return `
+      <button type="button" class="card-cidade" data-cidade="${esc(c.nome)}">
+        ${foto}
+        <span class="cidade-info">
+          <span class="cidade-nome">${esc(c.nome)}</span>
+          <span class="cidade-qtd">${qtd} imóve${qtd === 1 ? 'l' : 'is'} disponíve${qtd === 1 ? 'l' : 'is'}</span>
+        </span>
+      </button>`;
+  }).join('');
+
+  document.querySelectorAll('.card-cidade').forEach((card) => {
+    card.addEventListener('click', () => {
+      document.getElementById('f-cidade').value = card.dataset.cidade;
+      document.getElementById('f-finalidade').value = '';
+      document.getElementById('f-tipo').value = '';
+      document.getElementById('f-bairro').value = '';
+      document.getElementById('form-busca').requestSubmit();
+    });
+  });
+
+  document.getElementById('cidades-secao').style.display = '';
+}
+
 // ---------- Carrossel de banners ----------
 let bannersSite = [];
 let bannerAtivo = 0;
@@ -194,5 +240,5 @@ document.getElementById('menu-toggle').addEventListener('click', () => {
   document.getElementById('ano').textContent = new Date().getFullYear();
 })();
 
-carregarImoveis();
+carregarImoveis().then(carregarCidades);
 carregarBanners();

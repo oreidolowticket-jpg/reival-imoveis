@@ -291,6 +291,46 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 .diferencial h3 { font-size: 1.05rem; margin-bottom: 8px; }
 .diferencial p { font-size: .9rem; color: var(--cinza-500); }
 
+/* ---------- Cards de cidades ---------- */
+.grade-cidades { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.card-cidade {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--raio);
+  overflow: hidden;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  background: linear-gradient(135deg, var(--laranja-500), var(--laranja-600));
+  display: block;
+  width: 100%;
+}
+.card-cidade img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform .3s;
+}
+.card-cidade:hover img { transform: scale(1.06); }
+.card-cidade::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(28,25,23,.05) 30%, rgba(28,25,23,.72) 100%);
+}
+.card-cidade .cidade-info {
+  position: absolute; inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 18px;
+  color: #fff;
+  text-align: center;
+}
+.card-cidade .cidade-nome { font-size: 1.15rem; font-weight: 700; text-shadow: 0 2px 8px rgba(0,0,0,.5); }
+.card-cidade .cidade-qtd { font-size: .8rem; opacity: .9; text-shadow: 0 1px 6px rgba(0,0,0,.5); }
+
 /* ---------- CTA anuncie ---------- */
 .cta-anuncie {
   background: var(--escuro-900);
@@ -467,6 +507,11 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   .banners-pontos { margin-top: 10px; }
 
   .logo-rodape img { height: 42px; }
+
+  /* Cidades em 2 colunas */
+  .grade-cidades { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .card-cidade .cidade-nome { font-size: .95rem; }
+  .card-cidade .cidade-qtd { font-size: .72rem; }
   .topbar .container > span:first-child { display: none; }
   .topbar .container { justify-content: center; }
   .hero {

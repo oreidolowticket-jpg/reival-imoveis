@@ -52,6 +52,7 @@ function mostrarPainel(email) {
   $('email-admin').textContent = email;
   carregarImoveis();
   carregarBanners();
+  carregarCidades();
 }
 
 $('form-login').addEventListener('submit', async (e) => {
@@ -101,6 +102,7 @@ async function carregarImoveis() {
   imoveis = data || [];
   renderLista();
   renderResumo();
+  renderCidades();
 }
 
 function renderResumo() {
@@ -551,6 +553,192 @@ $('form-banner').addEventListener('submit', async (e) => {
   } finally {
     btn.disabled = false;
     btn.textContent = 'Salvar banner';
+  }
+});
+
+// ============================================================
+// Cidades da página inicial
+// ============================================================
+let cidades = [];
+let cidadeImagemForm = null; // { url } já enviada ou { file, previewUrl } nova
+
+async function carregarCidades() {
+  const { data, error } = await sb
+    .from('cidades')
+    .select('*')
+    .order('ordem', { ascending: true })
+    .order('nome', { ascending: true });
+  if (error) {
+    $('lista-cidades').innerHTML = '<p style="color:var(--vermelho);">Erro ao carregar cidades.</p>';
+    console.error(error);
+    return;
+  }
+  cidades = data || [];
+  renderCidades();
+}
+
+function renderCidades() {
+  if (!cidades.length) {
+    $('lista-cidades').innerHTML = '<p style="color:var(--cinza-500);">Nenhuma cidade cadastrada. Clique em "+ Nova cidade" para criar a primeira.</p>';
+    return;
+  }
+  const qtdPorCidade = {};
+  for (const i of imoveis) {
+    if (i.cidade && i.ativo) qtdPorCidade[i.cidade] = (qtdPorCidade[i.cidade] || 0) + 1;
+  }
+  $('lista-cidades').innerHTML = cidades.map((c) => {
+    const qtd = qtdPorCidade[c.nome] || 0;
+    const foto = c.imagem
+      ? `<img src="${esc(c.imagem)}" alt="">`
+      : '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+    return `
+      <div class="linha-imovel ${c.ativo ? '' : 'inativo'}">
+        <div class="linha-foto">${foto}</div>
+        <div class="linha-info">
+          <h3>${esc(c.nome)}</h3>
+          <div class="meta">
+            <span>Ordem: ${c.ordem}</span>
+            <span>${qtd} imóve${qtd === 1 ? 'l' : 'is'} ativo${qtd === 1 ? '' : 's'}</span>
+            ${qtd === 0 ? '<span class="etiqueta oculto">Sem imóveis — não aparece no site</span>' : ''}
+            ${c.ativo ? '' : '<span class="etiqueta oculto">Oculta</span>'}
+          </div>
+        </div>
+        <div class="linha-acoes">
+          <button class="btn btn-borda btn-mini" onclick="editarCidade('${c.id}')">Editar</button>
+          <button class="btn btn-cinza btn-mini" onclick="alternarCidade('${c.id}')">${c.ativo ? 'Ocultar' : 'Publicar'}</button>
+          <button class="btn btn-vermelho btn-mini" onclick="excluirCidade('${c.id}')">Excluir</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function abrirFormCidade(cidade) {
+  cidadeImagemForm = null;
+  $('form-cidade').reset();
+  $('c-id').value = '';
+  $('c-ativo').checked = true;
+  $('c-ordem').value = 0;
+  $('cidade-status').textContent = '';
+
+  if (cidade) {
+    $('form-cidade-titulo').textContent = 'Editar cidade';
+    $('c-id').value = cidade.id;
+    $('c-nome').value = cidade.nome || '';
+    $('c-ordem').value = cidade.ordem ?? 0;
+    $('c-ativo').checked = !!cidade.ativo;
+    if (cidade.imagem) cidadeImagemForm = { url: cidade.imagem };
+  } else {
+    $('form-cidade-titulo').textContent = 'Nova cidade';
+  }
+
+  renderPreviewCidade();
+  $('modal-cidade-fundo').classList.add('aberto');
+  document.body.style.overflow = 'hidden';
+}
+
+function fecharFormCidade() {
+  $('modal-cidade-fundo').classList.remove('aberto');
+  document.body.style.overflow = '';
+}
+
+window.editarCidade = (id) => {
+  const c = cidades.find((x) => x.id === id);
+  if (c) abrirFormCidade(c);
+};
+
+window.alternarCidade = async (id) => {
+  const c = cidades.find((x) => x.id === id);
+  if (!c) return;
+  const { error } = await sb.from('cidades').update({ ativo: !c.ativo }).eq('id', id);
+  if (error) { toast('Erro ao atualizar a cidade.'); console.error(error); return; }
+  toast(!c.ativo ? 'Cidade publicada!' : 'Cidade oculta.');
+  carregarCidades();
+};
+
+window.excluirCidade = async (id) => {
+  const c = cidades.find((x) => x.id === id);
+  if (!c) return;
+  if (!confirm(`Excluir a cidade "${c.nome}"?\nOs imóveis dela não são afetados.`)) return;
+  const { error } = await sb.from('cidades').delete().eq('id', id);
+  if (error) { toast('Erro ao excluir a cidade.'); console.error(error); return; }
+  if (c.imagem) {
+    const caminho = caminhoStorage(c.imagem);
+    if (caminho) await sb.storage.from('fotos').remove([caminho]);
+  }
+  toast('Cidade excluída.');
+  carregarCidades();
+};
+
+function renderPreviewCidade() {
+  $('preview-cidade').innerHTML = cidadeImagemForm ? `
+    <div class="preview">
+      <img src="${esc(cidadeImagemForm.url || cidadeImagemForm.previewUrl)}" alt="Prévia da foto">
+      <button type="button" onclick="removerImagemCidade()" aria-label="Remover foto">&#10005;</button>
+    </div>` : '';
+}
+
+window.removerImagemCidade = () => {
+  if (cidadeImagemForm && cidadeImagemForm.previewUrl) URL.revokeObjectURL(cidadeImagemForm.previewUrl);
+  cidadeImagemForm = null;
+  renderPreviewCidade();
+};
+
+$('btn-nova-cidade').addEventListener('click', () => abrirFormCidade(null));
+$('btn-fechar-cidade').addEventListener('click', fecharFormCidade);
+$('btn-cancelar-cidade').addEventListener('click', fecharFormCidade);
+$('modal-cidade-fundo').addEventListener('click', (e) => { if (e.target === e.currentTarget) fecharFormCidade(); });
+$('btn-add-cidade-img').addEventListener('click', () => $('c-imagem').click());
+
+$('c-imagem').addEventListener('change', () => {
+  const file = $('c-imagem').files[0];
+  if (file && file.type.startsWith('image/')) {
+    if (cidadeImagemForm && cidadeImagemForm.previewUrl) URL.revokeObjectURL(cidadeImagemForm.previewUrl);
+    cidadeImagemForm = { file, previewUrl: URL.createObjectURL(file) };
+    renderPreviewCidade();
+  }
+  $('c-imagem').value = '';
+});
+
+$('form-cidade').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = $('btn-salvar-cidade');
+  btn.disabled = true;
+  btn.textContent = 'Salvando...';
+
+  try {
+    let imagem = cidadeImagemForm ? cidadeImagemForm.url : null;
+    if (cidadeImagemForm && cidadeImagemForm.file) {
+      $('cidade-status').textContent = 'Enviando foto...';
+      imagem = await uploadImagem(cidadeImagemForm.file, 'cidades/', 1200, 0.82);
+      $('cidade-status').textContent = '';
+    }
+
+    const registro = {
+      nome: $('c-nome').value.trim(),
+      ordem: Number($('c-ordem').value || 0),
+      ativo: $('c-ativo').checked,
+      imagem,
+    };
+
+    const id = $('c-id').value;
+    const { error } = id
+      ? await sb.from('cidades').update(registro).eq('id', id)
+      : await sb.from('cidades').insert(registro);
+    if (error) {
+      if (error.code === '23505') throw new Error('Essa cidade já está cadastrada.');
+      throw error;
+    }
+
+    toast(id ? 'Cidade atualizada!' : 'Cidade cadastrada!');
+    fecharFormCidade();
+    carregarCidades();
+  } catch (err) {
+    console.error(err);
+    $('cidade-status').textContent = '';
+    toast(err.message || 'Erro ao salvar a cidade.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Salvar cidade';
   }
 });
 

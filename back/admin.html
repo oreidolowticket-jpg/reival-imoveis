@@ -220,6 +220,15 @@
       </div>
 
       <div class="barra-acoes">
+        <h2>Cidades da página inicial</h2>
+        <button class="btn" id="btn-nova-cidade">+ Nova cidade</button>
+      </div>
+      <p style="font-size:.82rem;color:var(--cinza-500);margin:-8px 0 14px;">Cada cidade aparece no site somente quando tem pelo menos um imóvel ativo cadastrado nela (o nome precisa ser igual ao usado no imóvel).</p>
+      <div class="lista-imoveis" id="lista-cidades" style="margin-bottom:36px;">
+        <p style="color:var(--cinza-500);">Carregando...</p>
+      </div>
+
+      <div class="barra-acoes">
         <h2>Imóveis</h2>
         <div class="busca-admin">
           <input type="text" id="filtro-admin" placeholder="Buscar por título, bairro ou código...">
@@ -358,6 +367,39 @@
           <span class="aviso-status" id="banner-status"></span>
           <button type="button" class="btn btn-borda" id="btn-cancelar-banner">Cancelar</button>
           <button type="submit" class="btn" id="btn-salvar-banner">Salvar banner</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ MODAL CIDADE ============ -->
+  <div class="modal-fundo" id="modal-cidade-fundo">
+    <div class="modal-form" style="max-width:520px;">
+      <button class="modal-fechar" id="btn-fechar-cidade" aria-label="Fechar">&#10005;</button>
+      <h2 id="form-cidade-titulo">Nova cidade</h2>
+      <form id="form-cidade">
+        <input type="hidden" id="c-id">
+        <div class="campo">
+          <label for="c-nome">Nome da cidade *</label>
+          <input type="text" id="c-nome" required placeholder="Ex.: São José dos Campos">
+        </div>
+        <div class="campo">
+          <label for="c-ordem">Ordem de exibição (menor aparece primeiro)</label>
+          <input type="number" id="c-ordem" min="0" step="1" value="0">
+        </div>
+        <div class="linha-check">
+          <label class="check"><input type="checkbox" id="c-ativo" checked> Exibir no site</label>
+        </div>
+        <div class="area-fotos">
+          <p>Foto da cidade — tamanho recomendado: 800 × 600 px</p>
+          <input type="file" id="c-imagem" accept="image/*" hidden>
+          <button type="button" class="btn btn-borda" id="btn-add-cidade-img">Escolher foto</button>
+          <div class="previews" id="preview-cidade" style="grid-template-columns:1fr;max-width:240px;margin-left:auto;margin-right:auto;"></div>
+        </div>
+        <div class="form-acoes">
+          <span class="aviso-status" id="cidade-status"></span>
+          <button type="button" class="btn btn-borda" id="btn-cancelar-cidade">Cancelar</button>
+          <button type="submit" class="btn" id="btn-salvar-cidade">Salvar cidade</button>
         </div>
       </form>
     </div>

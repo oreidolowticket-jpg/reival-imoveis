@@ -87,8 +87,9 @@ function renderImovel(imovel) {
             </div>` : ''}
         </div>
         <div class="bloco-descricao">
-          <h2>Sobre este imóvel</h2>
+          <h2>Descrição</h2>
           <p>${imovel.descricao ? esc(imovel.descricao) : 'Entre em contato para saber mais detalhes sobre este imóvel.'}</p>
+          <p class="aviso-legal">Os valores, condições de pagamento e disponibilidade dos imóveis estão sujeitos a alterações sem aviso prévio. Consulte sempre a nossa equipe para informações atualizadas.</p>
         </div>
       </div>
       <aside class="painel-lateral">

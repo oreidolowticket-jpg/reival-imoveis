@@ -32,6 +32,7 @@ function mostrarPainel(email) {
   $('painel').classList.add('visivel');
   $('email-admin').textContent = email;
   carregarImoveis();
+  carregarBanners();
 }
 
 $('form-login').addEventListener('submit', async (e) => {
@@ -238,41 +239,43 @@ window.removerFoto = (idx) => {
   renderPreviews();
 };
 
-// Redimensiona para no máx. 1600px e converte para JPEG (~80%),
-// reduzindo muito o espaço e o tráfego no Supabase Storage.
-async function comprimirImagem(file) {
+// Redimensiona e converte para JPEG, reduzindo muito o espaço
+// e o tráfego no Supabase Storage.
+async function comprimirImagem(file, MAX = 1600, qualidade = 0.82) {
   if (!/^image\/(jpeg|png|webp)$/i.test(file.type)) return file;
   const img = await createImageBitmap(file).catch(() => null);
   if (!img) return file;
-  const MAX = 1600;
   const escala = Math.min(1, MAX / Math.max(img.width, img.height));
   const canvas = document.createElement('canvas');
   canvas.width = Math.round(img.width * escala);
   canvas.height = Math.round(img.height * escala);
   canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
   img.close();
-  const blob = await new Promise((res) => canvas.toBlob(res, 'image/jpeg', 0.82));
+  const blob = await new Promise((res) => canvas.toBlob(res, 'image/jpeg', qualidade));
   return blob && blob.size < file.size ? blob : file;
+}
+
+async function uploadImagem(arquivoOriginal, pasta, MAX, qualidade) {
+  const arquivo = await comprimirImagem(arquivoOriginal, MAX, qualidade);
+  const comprimido = arquivo !== arquivoOriginal;
+  const ext = comprimido
+    ? 'jpg'
+    : ((arquivoOriginal.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg');
+  const caminho = `${pasta}${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const { error } = await sb.storage.from('fotos').upload(caminho, arquivo, {
+    cacheControl: '31536000',
+    contentType: comprimido ? 'image/jpeg' : (arquivoOriginal.type || undefined),
+    upsert: false,
+  });
+  if (error) throw new Error(`Falha no upload de "${arquivoOriginal.name}": ${error.message}`);
+  return sb.storage.from('fotos').getPublicUrl(caminho).data.publicUrl;
 }
 
 async function uploadFotos() {
   const urls = [];
   for (const f of fotosForm) {
     if (f.url) { urls.push(f.url); continue; }
-    const arquivo = await comprimirImagem(f.file);
-    const comprimido = arquivo !== f.file;
-    const ext = comprimido
-      ? 'jpg'
-      : ((f.file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg');
-    const caminho = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-    const { error } = await sb.storage.from('fotos').upload(caminho, arquivo, {
-      cacheControl: '31536000',
-      contentType: comprimido ? 'image/jpeg' : (f.file.type || undefined),
-      upsert: false,
-    });
-    if (error) throw new Error(`Falha no upload de "${f.file.name}": ${error.message}`);
-    const { data } = sb.storage.from('fotos').getPublicUrl(caminho);
-    urls.push(data.publicUrl);
+    urls.push(await uploadImagem(f.file, '', 1600, 0.82));
   }
   return urls;
 }
@@ -340,6 +343,185 @@ $('form-imovel').addEventListener('submit', async (e) => {
   } finally {
     btn.disabled = false;
     btn.textContent = 'Salvar imóvel';
+  }
+});
+
+// ============================================================
+// Banners da página inicial
+// ============================================================
+let banners = [];
+let bannerImagemForm = null; // { url } já enviada ou { file, previewUrl } nova
+
+const caminhoStorage = (url) => {
+  const m = String(url).split('/storage/v1/object/public/fotos/')[1];
+  return m ? decodeURIComponent(m) : null;
+};
+
+async function carregarBanners() {
+  const { data, error } = await sb
+    .from('banners')
+    .select('*')
+    .order('ordem', { ascending: true })
+    .order('criado_em', { ascending: true });
+  if (error) {
+    $('lista-banners').innerHTML = '<p style="color:var(--vermelho);">Erro ao carregar banners.</p>';
+    console.error(error);
+    return;
+  }
+  banners = data || [];
+  renderBanners();
+}
+
+function renderBanners() {
+  if (!banners.length) {
+    $('lista-banners').innerHTML = '<p style="color:var(--cinza-500);">Nenhum banner cadastrado. Clique em "+ Novo banner" para criar o primeiro.</p>';
+    return;
+  }
+  $('lista-banners').innerHTML = banners.map((b) => `
+    <div class="linha-imovel linha-banner ${b.ativo ? '' : 'inativo'}">
+      <div class="linha-foto"><img src="${esc(b.imagem)}" alt=""></div>
+      <div class="linha-info">
+        <h3>${esc(b.titulo || 'Banner sem nome')}</h3>
+        <div class="meta">
+          <span>Ordem: ${b.ordem}</span>
+          ${b.link ? '<span>Com link</span>' : ''}
+          ${b.ativo ? '' : '<span class="etiqueta oculto">Oculto</span>'}
+        </div>
+      </div>
+      <div class="linha-acoes">
+        <button class="btn btn-borda btn-mini" onclick="editarBanner('${b.id}')">Editar</button>
+        <button class="btn btn-cinza btn-mini" onclick="alternarBanner('${b.id}')">${b.ativo ? 'Ocultar' : 'Publicar'}</button>
+        <button class="btn btn-vermelho btn-mini" onclick="excluirBanner('${b.id}')">Excluir</button>
+      </div>
+    </div>`).join('');
+}
+
+function abrirFormBanner(banner) {
+  bannerImagemForm = null;
+  $('form-banner').reset();
+  $('b-id').value = '';
+  $('b-ativo').checked = true;
+  $('b-ordem').value = 0;
+  $('banner-status').textContent = '';
+
+  if (banner) {
+    $('form-banner-titulo').textContent = 'Editar banner';
+    $('b-id').value = banner.id;
+    $('b-titulo').value = banner.titulo || '';
+    $('b-link').value = banner.link || '';
+    $('b-ordem').value = banner.ordem ?? 0;
+    $('b-ativo').checked = !!banner.ativo;
+    bannerImagemForm = { url: banner.imagem };
+  } else {
+    $('form-banner-titulo').textContent = 'Novo banner';
+  }
+
+  renderPreviewBanner();
+  $('modal-banner-fundo').classList.add('aberto');
+  document.body.style.overflow = 'hidden';
+}
+
+function fecharFormBanner() {
+  $('modal-banner-fundo').classList.remove('aberto');
+  document.body.style.overflow = '';
+}
+
+window.editarBanner = (id) => {
+  const b = banners.find((x) => x.id === id);
+  if (b) abrirFormBanner(b);
+};
+
+window.alternarBanner = async (id) => {
+  const b = banners.find((x) => x.id === id);
+  if (!b) return;
+  const { error } = await sb.from('banners').update({ ativo: !b.ativo }).eq('id', id);
+  if (error) { toast('Erro ao atualizar o banner.'); console.error(error); return; }
+  toast(!b.ativo ? 'Banner publicado!' : 'Banner oculto.');
+  carregarBanners();
+};
+
+window.excluirBanner = async (id) => {
+  const b = banners.find((x) => x.id === id);
+  if (!b) return;
+  if (!confirm(`Excluir o banner "${b.titulo || 'sem nome'}"?\nEssa ação não pode ser desfeita.`)) return;
+  const { error } = await sb.from('banners').delete().eq('id', id);
+  if (error) { toast('Erro ao excluir o banner.'); console.error(error); return; }
+  const caminho = caminhoStorage(b.imagem);
+  if (caminho) await sb.storage.from('fotos').remove([caminho]);
+  toast('Banner excluído.');
+  carregarBanners();
+};
+
+function renderPreviewBanner() {
+  $('preview-banner').innerHTML = bannerImagemForm ? `
+    <div class="preview">
+      <img src="${esc(bannerImagemForm.url || bannerImagemForm.previewUrl)}" alt="Prévia do banner">
+      <button type="button" onclick="removerImagemBanner()" aria-label="Remover imagem">&#10005;</button>
+    </div>` : '';
+}
+
+window.removerImagemBanner = () => {
+  if (bannerImagemForm && bannerImagemForm.previewUrl) URL.revokeObjectURL(bannerImagemForm.previewUrl);
+  bannerImagemForm = null;
+  renderPreviewBanner();
+};
+
+$('btn-novo-banner').addEventListener('click', () => abrirFormBanner(null));
+$('btn-fechar-banner').addEventListener('click', fecharFormBanner);
+$('btn-cancelar-banner').addEventListener('click', fecharFormBanner);
+$('modal-banner-fundo').addEventListener('click', (e) => { if (e.target === e.currentTarget) fecharFormBanner(); });
+$('btn-add-banner-img').addEventListener('click', () => $('b-imagem').click());
+
+$('b-imagem').addEventListener('change', () => {
+  const file = $('b-imagem').files[0];
+  if (file && file.type.startsWith('image/')) {
+    if (bannerImagemForm && bannerImagemForm.previewUrl) URL.revokeObjectURL(bannerImagemForm.previewUrl);
+    bannerImagemForm = { file, previewUrl: URL.createObjectURL(file) };
+    renderPreviewBanner();
+  }
+  $('b-imagem').value = '';
+});
+
+$('form-banner').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!bannerImagemForm) { toast('Escolha a imagem do banner.'); return; }
+
+  const btn = $('btn-salvar-banner');
+  btn.disabled = true;
+  btn.textContent = 'Salvando...';
+
+  try {
+    let imagem = bannerImagemForm.url;
+    if (!imagem) {
+      $('banner-status').textContent = 'Enviando imagem...';
+      imagem = await uploadImagem(bannerImagemForm.file, 'banners/', 1920, 0.85);
+      $('banner-status').textContent = '';
+    }
+
+    const registro = {
+      titulo: $('b-titulo').value.trim() || null,
+      link: $('b-link').value.trim() || null,
+      ordem: Number($('b-ordem').value || 0),
+      ativo: $('b-ativo').checked,
+      imagem,
+    };
+
+    const id = $('b-id').value;
+    const { error } = id
+      ? await sb.from('banners').update(registro).eq('id', id)
+      : await sb.from('banners').insert(registro);
+    if (error) throw error;
+
+    toast(id ? 'Banner atualizado!' : 'Banner criado!');
+    fecharFormBanner();
+    carregarBanners();
+  } catch (err) {
+    console.error(err);
+    $('banner-status').textContent = '';
+    toast(err.message || 'Erro ao salvar o banner.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Salvar banner';
   }
 });
 

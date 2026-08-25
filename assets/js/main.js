@@ -109,6 +109,60 @@ document.getElementById('form-busca').addEventListener('submit', (e) => {
   document.getElementById('imoveis').scrollIntoView({ behavior: 'smooth' });
 });
 
+// ---------- Carrossel de banners ----------
+let bannersSite = [];
+let bannerAtivo = 0;
+let bannerTimer;
+
+async function carregarBanners() {
+  const { data } = await sb
+    .from('banners')
+    .select('*')
+    .eq('ativo', true)
+    .order('ordem', { ascending: true })
+    .order('criado_em', { ascending: true });
+
+  bannersSite = data || [];
+  if (!bannersSite.length) return;
+
+  const cont = document.getElementById('carrossel-banners');
+  cont.innerHTML = bannersSite.map((b, i) => {
+    const img = `<img src="${esc(b.imagem)}" alt="${esc(b.titulo || 'Banner')}" loading="${i === 0 ? 'eager' : 'lazy'}">`;
+    return b.link
+      ? `<a class="banner-slide ${i === 0 ? 'ativo' : ''}" href="${esc(b.link)}" target="_blank" rel="noopener">${img}</a>`
+      : `<div class="banner-slide ${i === 0 ? 'ativo' : ''}">${img}</div>`;
+  }).join('') + (bannersSite.length > 1 ? `
+    <button class="galeria-nav ant" id="banner-ant" aria-label="Banner anterior">&#10094;</button>
+    <button class="galeria-nav prox" id="banner-prox" aria-label="Próximo banner">&#10095;</button>` : '');
+
+  document.getElementById('banners-pontos').innerHTML = bannersSite.length > 1
+    ? bannersSite.map((_, i) => `<button class="banner-ponto ${i === 0 ? 'ativo' : ''}" data-i="${i}" aria-label="Ir para o banner ${i + 1}"></button>`).join('')
+    : '';
+
+  document.getElementById('banners-secao').style.display = '';
+
+  if (bannersSite.length > 1) {
+    document.getElementById('banner-ant').addEventListener('click', () => mudarBanner(bannerAtivo - 1));
+    document.getElementById('banner-prox').addEventListener('click', () => mudarBanner(bannerAtivo + 1));
+    document.querySelectorAll('.banner-ponto').forEach((p) => {
+      p.addEventListener('click', () => mudarBanner(Number(p.dataset.i)));
+    });
+    reiniciarAutoplay();
+  }
+}
+
+function mudarBanner(i) {
+  bannerAtivo = (i + bannersSite.length) % bannersSite.length;
+  document.querySelectorAll('.banner-slide').forEach((s, idx) => s.classList.toggle('ativo', idx === bannerAtivo));
+  document.querySelectorAll('.banner-ponto').forEach((p, idx) => p.classList.toggle('ativo', idx === bannerAtivo));
+  reiniciarAutoplay();
+}
+
+function reiniciarAutoplay() {
+  clearInterval(bannerTimer);
+  bannerTimer = setInterval(() => mudarBanner(bannerAtivo + 1), 5000);
+}
+
 // ---------- Menu mobile ----------
 document.getElementById('menu-toggle').addEventListener('click', () => {
   document.getElementById('nav').classList.toggle('aberto');
@@ -130,3 +184,4 @@ document.getElementById('menu-toggle').addEventListener('click', () => {
 })();
 
 carregarImoveis();
+carregarBanners();

@@ -146,6 +146,10 @@
     .form-acoes { display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; }
     .aviso-status { font-size: .85rem; color: var(--cinza-500); margin-right: auto; align-self: center; }
 
+    .linha-banner { grid-template-columns: 132px 1fr auto; }
+    .linha-banner .linha-foto { width: 132px; height: 48px; }
+    #preview-banner .preview { aspect-ratio: 3 / 1; }
+
     .toast {
       position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
       background: var(--escuro-900); color: #fff; border-radius: 999px; padding: 12px 26px;
@@ -210,6 +214,14 @@
         <div class="card-resumo"><div class="num" id="resumo-ativos">—</div><div class="rot">Publicados no site</div></div>
         <div class="card-resumo"><div class="num" id="resumo-destaques">—</div><div class="rot">Em destaque</div></div>
         <div class="card-resumo"><div class="num" id="resumo-venda">—</div><div class="rot">À venda</div></div>
+      </div>
+
+      <div class="barra-acoes">
+        <h2>Banners da página inicial</h2>
+        <button class="btn" id="btn-novo-banner">+ Novo banner</button>
+      </div>
+      <div class="lista-imoveis" id="lista-banners" style="margin-bottom:36px;">
+        <p style="color:var(--cinza-500);">Carregando...</p>
       </div>
 
       <div class="barra-acoes">
@@ -310,6 +322,43 @@
           <span class="aviso-status" id="form-status"></span>
           <button type="button" class="btn btn-borda" id="btn-cancelar">Cancelar</button>
           <button type="submit" class="btn" id="btn-salvar">Salvar imóvel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ MODAL BANNER ============ -->
+  <div class="modal-fundo" id="modal-banner-fundo">
+    <div class="modal-form" style="max-width:560px;">
+      <button class="modal-fechar" id="btn-fechar-banner" aria-label="Fechar">&#10005;</button>
+      <h2 id="form-banner-titulo">Novo banner</h2>
+      <form id="form-banner">
+        <input type="hidden" id="b-id">
+        <div class="campo">
+          <label for="b-titulo">Nome do banner (uso interno)</label>
+          <input type="text" id="b-titulo" placeholder="Ex.: Campanha de lançamento">
+        </div>
+        <div class="campo">
+          <label for="b-link">Link ao clicar (opcional)</label>
+          <input type="url" id="b-link" placeholder="https://... (deixe em branco se não tiver)">
+        </div>
+        <div class="campo">
+          <label for="b-ordem">Ordem de exibição (menor aparece primeiro)</label>
+          <input type="number" id="b-ordem" min="0" step="1" value="0">
+        </div>
+        <div class="linha-check">
+          <label class="check"><input type="checkbox" id="b-ativo" checked> Exibir no site</label>
+        </div>
+        <div class="area-fotos">
+          <p>Imagem do banner — tamanho recomendado: 1500 × 500 px (proporção 3:1)</p>
+          <input type="file" id="b-imagem" accept="image/*" hidden>
+          <button type="button" class="btn btn-borda" id="btn-add-banner-img">Escolher imagem</button>
+          <div class="previews" id="preview-banner" style="grid-template-columns:1fr;"></div>
+        </div>
+        <div class="form-acoes">
+          <span class="aviso-status" id="banner-status"></span>
+          <button type="button" class="btn btn-borda" id="btn-cancelar-banner">Cancelar</button>
+          <button type="submit" class="btn" id="btn-salvar-banner">Salvar banner</button>
         </div>
       </form>
     </div>

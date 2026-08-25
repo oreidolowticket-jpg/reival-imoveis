@@ -1,5 +1,5 @@
 // ============================================================
-// CaçapavaImóveis — Painel administrativo
+// Reival Imóveis — Painel administrativo
 // ============================================================
 const sb = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
 
@@ -90,7 +90,7 @@ function renderResumo() {
 function renderLista() {
   const termo = $('filtro-admin').value.trim().toLowerCase();
   const lista = termo
-    ? imoveis.filter((i) => `${i.titulo} ${i.bairro || ''} ${i.codigo}`.toLowerCase().includes(termo))
+    ? imoveis.filter((i) => `${i.titulo} ${i.bairro || ''} ${i.cidade || ''} ${i.codigo}`.toLowerCase().includes(termo))
     : imoveis;
 
   if (!lista.length) {
@@ -110,7 +110,7 @@ function renderLista() {
           <h3>${esc(i.titulo)}</h3>
           <div class="meta">
             <span>Cód. ${i.codigo}</span>
-            <span>${esc(i.tipo)}${i.bairro ? ' · ' + esc(i.bairro) : ''}</span>
+            <span>${esc(i.tipo)} · ${esc([i.bairro, i.cidade].filter(Boolean).join(', '))}</span>
             <span class="preco">${fmtPreco(i.preco)}</span>
             <span class="etiqueta ${i.finalidade === 'Aluguel' ? 'aluguel' : 'venda'}">${esc(i.finalidade)}</span>
             ${i.destaque ? '<span class="etiqueta destaque">Destaque</span>' : ''}
@@ -176,6 +176,7 @@ function abrirForm(imovel) {
     $('i-titulo').value = imovel.titulo || '';
     $('i-tipo').value = imovel.tipo || 'Casa';
     $('i-finalidade').value = imovel.finalidade || 'Venda';
+    $('i-cidade').value = imovel.cidade || '';
     $('i-bairro').value = imovel.bairro || '';
     $('i-preco').value = imovel.preco ?? '';
     $('i-quartos').value = imovel.quartos ?? '';
@@ -299,6 +300,7 @@ $('form-imovel').addEventListener('submit', async (e) => {
       ...($('i-codigo').value !== '' ? { codigo: Number($('i-codigo').value) } : {}),
       tipo: $('i-tipo').value,
       finalidade: $('i-finalidade').value,
+      cidade: $('i-cidade').value.trim(),
       bairro: $('i-bairro').value.trim() || null,
       preco: numOuNull('i-preco'),
       quartos: numOuNull('i-quartos'),

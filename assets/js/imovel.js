@@ -1,5 +1,5 @@
 // ============================================================
-// CaçapavaImóveis — Página de detalhes do imóvel
+// Reival Imóveis — Página de detalhes do imóvel
 // ============================================================
 const sb = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
 
@@ -53,7 +53,7 @@ window.mudarFoto = (dir) => {
 window.irParaFoto = (i) => { fotoAtual = i; renderFotoPrincipal(); };
 
 function renderImovel(imovel) {
-  document.title = `${imovel.titulo} | CaçapavaImóveis`;
+  document.title = `${imovel.titulo} | Reival Imóveis`;
   fotos = Array.isArray(imovel.fotos) ? imovel.fotos : [];
   fotoAtual = 0;
 
@@ -62,10 +62,10 @@ function renderImovel(imovel) {
   if (imovel.banheiros) chips.push(`<span class="atributo-chip">${ICONES.banho} ${imovel.banheiros} banheiro${imovel.banheiros > 1 ? 's' : ''}</span>`);
   if (imovel.vagas) chips.push(`<span class="atributo-chip">${ICONES.carro} ${imovel.vagas} vaga${imovel.vagas > 1 ? 's' : ''}</span>`);
   if (imovel.area) chips.push(`<span class="atributo-chip">${ICONES.area} ${Number(imovel.area).toLocaleString('pt-BR')} m²</span>`);
-  if (imovel.bairro) chips.push(`<span class="atributo-chip">${ICONES.pino} ${esc(imovel.bairro)}</span>`);
+  chips.push(`<span class="atributo-chip">${ICONES.pino} ${esc([imovel.bairro, imovel.cidade].filter(Boolean).join(', '))}</span>`);
   if (imovel.aceita_financiamento) chips.push(`<span class="atributo-chip">${ICONES.cifrao} Aceita financiamento</span>`);
 
-  const msg = `Olá! Tenho interesse no imóvel "${imovel.titulo}" (código ${imovel.codigo}) que vi no site CaçapavaImóveis. Pode me passar mais informações?`;
+  const msg = `Olá! Tenho interesse no imóvel "${imovel.titulo}" (código ${imovel.codigo}) que vi no site Reival Imóveis. Pode me passar mais informações?`;
   const msgVisita = `Olá! Gostaria de agendar uma visita ao imóvel "${imovel.titulo}" (código ${imovel.codigo}).`;
 
   document.getElementById('conteudo-imovel').innerHTML = `
@@ -94,7 +94,7 @@ function renderImovel(imovel) {
       </div>
       <aside class="painel-lateral">
         <div class="cartao-info">
-          <span class="tipo-bairro">${esc(imovel.tipo)} · ${esc(imovel.bairro || imovel.cidade)} · Código ${imovel.codigo}</span>
+          <span class="tipo-bairro">${esc(imovel.tipo)} · ${esc([imovel.bairro, imovel.cidade].filter(Boolean).join(', '))} · Código ${imovel.codigo}</span>
           <h1>${esc(imovel.titulo)}</h1>
           <div class="preco-grande">${fmtPreco(imovel.preco, imovel.finalidade)}</div>
           <span class="rotulo-preco">${imovel.finalidade === 'Aluguel' ? 'Valor do aluguel' : 'Valor de venda'}</span>
@@ -125,7 +125,7 @@ function cardSimilar(i) {
         ${foto}
       </div>
       <div class="card-corpo">
-        <span class="tipo-bairro">${esc(i.tipo)}${i.bairro ? ' · ' + esc(i.bairro) : ''}</span>
+        <span class="tipo-bairro">${esc(i.tipo)} · ${esc([i.bairro, i.cidade].filter(Boolean).join(', '))}</span>
         <h3>${esc(i.titulo)}</h3>
         <span class="codigo">Código: ${i.codigo}</span>
         <div class="card-preco" style="margin-top:12px;">
@@ -166,8 +166,8 @@ document.getElementById('menu-toggle').addEventListener('click', () => {
   document.getElementById('nav').classList.toggle('aberto');
 });
 (function contatos() {
-  const msgGeral = 'Olá! Vim pelo site CaçapavaImóveis e gostaria de mais informações.';
-  const msgAnuncio = 'Olá! Gostaria de anunciar meu imóvel com a CaçapavaImóveis.';
+  const msgGeral = 'Olá! Vim pelo site Reival Imóveis e gostaria de mais informações.';
+  const msgAnuncio = 'Olá! Gostaria de anunciar meu imóvel com a Reival Imóveis.';
   document.getElementById('topbar-telefone').href = zapLink(msgGeral);
   document.getElementById('topbar-telefone').innerHTML = `&#128222; ${CONFIG.TELEFONE_EXIBICAO}`;
   document.getElementById('zap-flutuante').href = zapLink(msgGeral);

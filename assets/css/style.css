@@ -141,7 +141,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   box-shadow: var(--sombra);
   padding: 22px;
   display: grid;
-  grid-template-columns: 1fr 1fr 1.4fr auto;
+  grid-template-columns: 1fr 1fr 1fr 1.3fr auto;
   gap: 14px;
   align-items: end;
 }

@@ -1,5 +1,5 @@
 // ============================================================
-// CaçapavaImóveis — Landing page
+// Reival Imóveis — Landing page
 // ============================================================
 const sb = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
 
@@ -47,7 +47,7 @@ function cardImovel(imovel) {
         ${foto}
       </div>
       <div class="card-corpo">
-        <span class="tipo-bairro">${esc(imovel.tipo)}${imovel.bairro ? ' · ' + esc(imovel.bairro) : ''}</span>
+        <span class="tipo-bairro">${esc(imovel.tipo)} · ${esc([imovel.bairro, imovel.cidade].filter(Boolean).join(', '))}</span>
         <h3>${esc(imovel.titulo)}</h3>
         <span class="codigo">Código: ${imovel.codigo}</span>
         ${atributos.length ? `<div class="card-atributos">${atributos.join('')}</div>` : '<div class="card-atributos"><span>Consulte detalhes</span></div>'}
@@ -84,6 +84,15 @@ async function carregarImoveis() {
   renderizar(todosImoveis.filter((i) => i.destaque).slice(0, 6), 'grade-destaques', 'Nenhum destaque no momento.');
   renderizar(todosImoveis, 'grade-imoveis', 'Nenhum imóvel disponível no momento.');
   document.getElementById('stat-imoveis').textContent = todosImoveis.length;
+  preencherCidades();
+}
+
+function preencherCidades() {
+  const cidades = [...new Set(todosImoveis.map((i) => i.cidade).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b, 'pt-BR'));
+  const select = document.getElementById('f-cidade');
+  select.innerHTML = '<option value="">Todas as cidades</option>' +
+    cidades.map((c) => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
 }
 
 // ---------- Busca / filtros ----------
@@ -91,13 +100,15 @@ document.getElementById('form-busca').addEventListener('submit', (e) => {
   e.preventDefault();
   const finalidade = document.getElementById('f-finalidade').value;
   const tipo = document.getElementById('f-tipo').value;
+  const cidade = document.getElementById('f-cidade').value;
   const termo = document.getElementById('f-bairro').value.trim().toLowerCase();
 
   const filtrados = todosImoveis.filter((i) => {
     if (finalidade && i.finalidade !== finalidade) return false;
     if (tipo && i.tipo !== tipo) return false;
+    if (cidade && i.cidade !== cidade) return false;
     if (termo) {
-      const alvo = `${i.titulo} ${i.bairro || ''} ${i.descricao || ''} ${i.endereco || ''}`.toLowerCase();
+      const alvo = `${i.titulo} ${i.bairro || ''} ${i.cidade || ''} ${i.descricao || ''} ${i.endereco || ''}`.toLowerCase();
       if (!alvo.includes(termo)) return false;
     }
     return true;
@@ -170,8 +181,8 @@ document.getElementById('menu-toggle').addEventListener('click', () => {
 
 // ---------- Contatos dinâmicos ----------
 (function contatos() {
-  const msgGeral = 'Olá! Vim pelo site CaçapavaImóveis e gostaria de mais informações.';
-  const msgAnuncio = 'Olá! Gostaria de anunciar meu imóvel com a CaçapavaImóveis.';
+  const msgGeral = 'Olá! Vim pelo site Reival Imóveis e gostaria de mais informações.';
+  const msgAnuncio = 'Olá! Gostaria de anunciar meu imóvel com a Reival Imóveis.';
   document.getElementById('topbar-telefone').href = zapLink(msgGeral);
   document.getElementById('topbar-telefone').innerHTML = `&#128222; ${CONFIG.TELEFONE_EXIBICAO}`;
   document.getElementById('zap-flutuante').href = zapLink(msgGeral);

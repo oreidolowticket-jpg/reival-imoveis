@@ -173,7 +173,12 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   overflow: hidden;
   box-shadow: var(--sombra-suave);
   background: var(--cinza-100);
+  touch-action: pan-y;
+  user-select: none;
+  cursor: grab;
 }
+.carrossel-banners:active { cursor: grabbing; }
+.banner-slide img { -webkit-user-drag: none; }
 .banner-slide {
   position: absolute; inset: 0;
   opacity: 0;

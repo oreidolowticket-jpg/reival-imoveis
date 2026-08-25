@@ -184,13 +184,11 @@ async function carregarBanners() {
 
   const cont = document.getElementById('carrossel-banners');
   cont.innerHTML = bannersSite.map((b, i) => {
-    const img = `<img src="${esc(b.imagem)}" alt="${esc(b.titulo || 'Banner')}" loading="${i === 0 ? 'eager' : 'lazy'}">`;
+    const img = `<img src="${esc(b.imagem)}" alt="${esc(b.titulo || 'Banner')}" loading="${i === 0 ? 'eager' : 'lazy'}" draggable="false">`;
     return b.link
       ? `<a class="banner-slide ${i === 0 ? 'ativo' : ''}" href="${esc(b.link)}" target="_blank" rel="noopener">${img}</a>`
       : `<div class="banner-slide ${i === 0 ? 'ativo' : ''}">${img}</div>`;
-  }).join('') + (bannersSite.length > 1 ? `
-    <button class="galeria-nav ant" id="banner-ant" aria-label="Banner anterior">&#10094;</button>
-    <button class="galeria-nav prox" id="banner-prox" aria-label="Próximo banner">&#10095;</button>` : '');
+  }).join('');
 
   document.getElementById('banners-pontos').innerHTML = bannersSite.length > 1
     ? bannersSite.map((_, i) => `<button class="banner-ponto ${i === 0 ? 'ativo' : ''}" data-i="${i}" aria-label="Ir para o banner ${i + 1}"></button>`).join('')
@@ -199,13 +197,42 @@ async function carregarBanners() {
   document.getElementById('banners-secao').style.display = '';
 
   if (bannersSite.length > 1) {
-    document.getElementById('banner-ant').addEventListener('click', () => mudarBanner(bannerAtivo - 1));
-    document.getElementById('banner-prox').addEventListener('click', () => mudarBanner(bannerAtivo + 1));
     document.querySelectorAll('.banner-ponto').forEach((p) => {
       p.addEventListener('click', () => mudarBanner(Number(p.dataset.i)));
     });
+    ativarDeslize(cont);
     reiniciarAutoplay();
   }
+}
+
+// Navegação por deslize (dedo ou mouse)
+function ativarDeslize(cont) {
+  let inicioX = null;
+  let arrastou = false;
+
+  cont.addEventListener('pointerdown', (e) => {
+    inicioX = e.clientX;
+    arrastou = false;
+    try { cont.setPointerCapture(e.pointerId); } catch (_) {}
+  });
+
+  cont.addEventListener('pointermove', (e) => {
+    if (inicioX !== null && Math.abs(e.clientX - inicioX) > 10) arrastou = true;
+  });
+
+  cont.addEventListener('pointerup', (e) => {
+    if (inicioX === null) return;
+    const delta = e.clientX - inicioX;
+    inicioX = null;
+    if (Math.abs(delta) > 40) mudarBanner(bannerAtivo + (delta < 0 ? 1 : -1));
+  });
+
+  cont.addEventListener('pointercancel', () => { inicioX = null; });
+
+  // Evita abrir o link do banner quando o gesto foi um deslize
+  cont.addEventListener('click', (e) => {
+    if (arrastou) { e.preventDefault(); e.stopPropagation(); }
+  }, true);
 }
 
 function mudarBanner(i) {

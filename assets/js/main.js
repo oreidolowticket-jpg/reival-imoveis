@@ -258,11 +258,16 @@ document.getElementById('menu-toggle').addEventListener('click', () => {
   const msgAnuncio = 'Olá! Gostaria de anunciar meu imóvel com a Reival Imóveis.';
   document.getElementById('topbar-telefone').href = zapLink(msgGeral);
   document.getElementById('topbar-telefone').innerHTML = `&#128222; ${CONFIG.TELEFONE_EXIBICAO}`;
+  document.getElementById('topbar-instagram').href = CONFIG.INSTAGRAM;
+  const topEmail = document.getElementById('topbar-email');
+  topEmail.href = `mailto:${CONFIG.EMAIL_CONTATO}`;
+  topEmail.innerHTML = `&#9993; ${CONFIG.EMAIL_CONTATO}`;
   document.getElementById('zap-flutuante').href = zapLink(msgGeral);
   document.getElementById('nav-anunciar').href = zapLink(msgAnuncio);
   document.getElementById('cta-anunciar-btn').href = zapLink(msgAnuncio);
   document.getElementById('rodape-telefone').textContent = CONFIG.TELEFONE_EXIBICAO;
-  document.getElementById('rodape-email').textContent = CONFIG.EMAIL_CONTATO;
+  document.getElementById('rodape-email').innerHTML = `<a href="mailto:${CONFIG.EMAIL_CONTATO}">${CONFIG.EMAIL_CONTATO}</a>`;
+  document.getElementById('rodape-instagram').innerHTML = `<a href="${CONFIG.INSTAGRAM}" target="_blank" rel="noopener">${CONFIG.INSTAGRAM_USUARIO}</a>`;
   document.getElementById('rodape-cidade').textContent = CONFIG.CIDADE;
   document.getElementById('ano').textContent = new Date().getFullYear();
 })();

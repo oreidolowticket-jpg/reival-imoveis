@@ -46,7 +46,10 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   padding: 8px 0;
 }
 .topbar .container { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
-.topbar a { color: var(--laranja-400); font-weight: 600; }
+.topbar-contatos { display: flex; align-items: center; gap: 18px; }
+.topbar a { color: #fff; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; transition: color .2s; }
+.topbar a:hover { color: var(--laranja-400); }
+.topbar-contatos svg { display: block; }
 
 /* ---------- Header / Nav ---------- */
 .header {
@@ -519,6 +522,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   .card-cidade .cidade-qtd { font-size: .72rem; }
   .topbar .container > span:first-child { display: none; }
   .topbar .container { justify-content: center; }
+  #topbar-email { display: none; }
   .hero {
     background:
       linear-gradient(rgba(28, 25, 23, .9), rgba(28, 25, 23, .78)),

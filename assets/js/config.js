@@ -9,6 +9,8 @@ const CONFIG = {
   // Número do WhatsApp com DDI+DDD, só dígitos
   WHATSAPP: '5512997232249',
   TELEFONE_EXIBICAO: '(12) 99723-2249',
-  EMAIL_CONTATO: 'contato@reivalimoveis.com.br',
+  EMAIL_CONTATO: 'reivalimobiliario@gmail.com',
+  INSTAGRAM: 'https://www.instagram.com/reival_imobiliario/',
+  INSTAGRAM_USUARIO: '@reival_imobiliario',
   CIDADE: 'São Paulo e região',
 };

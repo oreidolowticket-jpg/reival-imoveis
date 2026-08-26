@@ -9,7 +9,6 @@
   --verde-400: #59c09a;
   --verde-100: #d3eee4;
   --verde-50: #edf8f4;
-  --laranja-venda: #ea580c; /* usado apenas no selo "Venda" */
   --escuro-900: #1c1917;
   --escuro-700: #44403c;
   --cinza-500: #78716c;
@@ -276,12 +275,12 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   padding: 5px 12px;
   border-radius: 999px;
   color: #fff;
-  background: var(--laranja-venda);
+  background: var(--verde-600);
   text-transform: uppercase;
   letter-spacing: .04em;
 }
 .badge.aluguel { background: var(--escuro-700); }
-.badge.financia { background: var(--verde); }
+.badge.financia { background: var(--verde-400); color: var(--verde-600); }
 .card-corpo { padding: 20px; display: flex; flex-direction: column; flex: 1; }
 .card-corpo .tipo-bairro { font-size: .8rem; color: var(--cinza-500); font-weight: 500; }
 .card-corpo h3 { font-size: 1.05rem; font-weight: 600; margin: 4px 0 2px; line-height: 1.35; }
@@ -338,7 +337,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 }
 .faixa-estrela svg { width: 18px; height: 18px; display: block; }
 .faixa-selos { display: flex; gap: 8px; flex-wrap: wrap; }
-/* Selos sobre o verde escuro: verde claro do site, sem laranja. */
+/* Selos dentro da faixa: sobre o verde escuro, invertem para o verde claro. */
 .selo-faixa {
   font-size: .79rem; font-weight: 700;
   padding: 7px 16px;

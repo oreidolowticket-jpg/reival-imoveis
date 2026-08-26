@@ -254,10 +254,15 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   background: linear-gradient(135deg, var(--verde-100), var(--cinza-100));
   overflow: hidden;
 }
-.card-foto img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s; }
+.card-foto img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform .3s;
+}
 .card-imovel:hover .card-foto img { transform: scale(1.05); }
 .card-foto .sem-foto {
-  width: 100%; height: 100%;
+  position: absolute; inset: 0;
   display: grid; place-items: center;
   color: var(--verde-500);
 }
@@ -538,8 +543,14 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   overflow: hidden;
   background: linear-gradient(135deg, var(--verde-100), var(--cinza-100));
 }
-.galeria-pagina .principal img { width: 100%; height: 100%; object-fit: cover; }
-.galeria-pagina .sem-foto { width: 100%; height: 100%; display: grid; place-items: center; color: var(--verde-500); }
+/* Fixada no container: com height:100% sobre um pai de altura automática
+   (só aspect-ratio), o 100% vira auto e uma foto em pé estica a caixa. */
+.galeria-pagina .principal img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.galeria-pagina .sem-foto { position: absolute; inset: 0; display: grid; place-items: center; color: var(--verde-500); }
 .galeria-nav {
   position: absolute; top: 50%; transform: translateY(-50%);
   width: 42px; height: 42px;
@@ -568,8 +579,13 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   border: 2.5px solid transparent;
   cursor: pointer; flex-shrink: 0;
   padding: 0; background: none;
+  position: relative;
 }
-.miniatura img { width: 100%; height: 100%; object-fit: cover; }
+.miniatura img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
 .miniatura.ativa { border-color: var(--verde-600); }
 
 .painel-lateral { position: sticky; top: 96px; display: grid; gap: 18px; }
@@ -663,4 +679,38 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   .rodape-grid { grid-template-columns: 1fr; gap: 28px; }
   .cta-anuncie { padding: 32px 24px; }
   .cta-anuncie .btn { width: 100%; }
+
+  /* --- Página do imóvel --- */
+  /* Altura fixa no lugar do aspect-ratio: a foto nunca toma a tela toda,
+     independente da proporção da imagem enviada e do suporte do navegador. */
+  .galeria-pagina .principal {
+    aspect-ratio: auto;
+    height: clamp(250px, 44vh, 400px);
+  }
+  .galeria-nav { width: 36px; height: 36px; font-size: .95rem; }
+  .galeria-nav.ant { left: 10px; }
+  .galeria-nav.prox { right: 10px; }
+  .galeria-contador { bottom: 10px; right: 10px; font-size: .72rem; padding: 3px 10px; }
+  .miniaturas { gap: 8px; margin-top: 10px; }
+  .miniatura { width: 72px; border-width: 2px; }
+
+  .pagina-imovel { padding: 18px 0 44px; }
+  .breadcrumb { font-size: .76rem; margin-bottom: 14px; }
+  .imovel-grid { gap: 18px; }
+  .cartao-info, .bloco-descricao { padding: 20px 18px; }
+  .cartao-info h1 { font-size: 1.2rem; }
+  .cartao-info .preco-grande { font-size: 1.55rem; }
+  .bloco-descricao { margin-top: 16px; }
+  .atributo-chip { padding: 9px 11px; font-size: .8rem; }
+}
+
+/* Telas bem estreitas (iPhone SE e similares) */
+@media (max-width: 380px) {
+  .busca-card { grid-template-columns: 1fr; }
+  .atributos-grade { grid-template-columns: 1fr; }
+  .card-faixa { padding: 10px 12px; gap: 8px; }
+  .selo-faixa { font-size: .72rem; padding: 6px 12px; }
+  .faixa-estrela { width: 30px; height: 30px; }
+  .grade-cidades { grid-template-columns: 1fr; }
+  .card-atributos { gap: 10px; font-size: .8rem; }
 }

@@ -5,6 +5,9 @@ const sb = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
 
 let fotos = [];
 let fotoAtual = 0;
+// Os selos ficam guardados aqui porque renderFotoPrincipal reescreve o
+// conteudo do .principal a cada troca de foto.
+let selosImovel = '';
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
@@ -40,13 +43,13 @@ function naoEncontrado() {
 function renderFotoPrincipal() {
   const principal = document.getElementById('foto-principal');
   if (!principal) return;
-  principal.innerHTML = fotos.length
+  principal.innerHTML = selosImovel + (fotos.length
     ? `<img src="${esc(fotos[fotoAtual])}" alt="Foto do imóvel">
        ${fotos.length > 1 ? `
          <button class="galeria-nav ant" onclick="mudarFoto(-1)" aria-label="Foto anterior">&#10094;</button>
          <button class="galeria-nav prox" onclick="mudarFoto(1)" aria-label="Próxima foto">&#10095;</button>
          <span class="galeria-contador">${fotoAtual + 1} / ${fotos.length}</span>` : ''}`
-    : `<div class="sem-foto">${ICONES.casa}</div>`;
+    : `<div class="sem-foto">${ICONES.casa}</div>`);
   document.querySelectorAll('.miniatura').forEach((m, i) => m.classList.toggle('ativa', i === fotoAtual));
 }
 
@@ -61,6 +64,11 @@ function renderImovel(imovel) {
   document.title = `${titulo} | Reival Imóveis`;
   fotos = Array.isArray(imovel.fotos) ? imovel.fotos : [];
   fotoAtual = 0;
+  selosImovel = `
+    <div class="card-badges">
+      <span class="badge ${imovel.finalidade === 'Aluguel' ? 'aluguel' : ''}">${esc(imovel.finalidade)}</span>
+      ${imovel.aceita_financiamento ? '<span class="badge financia">Financia</span>' : ''}
+    </div>`;
 
   const chips = [];
   if (imovel.quartos) chips.push(`<span class="atributo-chip">${ICONES.cama} ${imovel.quartos} quarto${imovel.quartos > 1 ? 's' : ''}</span>`);
@@ -81,12 +89,7 @@ function renderImovel(imovel) {
     <div class="imovel-grid">
       <div>
         <div class="galeria-pagina">
-          <div class="principal" id="foto-principal">
-            <div class="card-badges">
-              <span class="badge ${imovel.finalidade === 'Aluguel' ? 'aluguel' : ''}">${esc(imovel.finalidade)}</span>
-              ${imovel.aceita_financiamento ? '<span class="badge financia">Financia</span>' : ''}
-            </div>
-          </div>
+          <div class="principal" id="foto-principal"></div>
           ${fotos.length > 1 ? `
             <div class="miniaturas">
               ${fotos.map((f, i) => `<button class="miniatura ${i === 0 ? 'ativa' : ''}" onclick="irParaFoto(${i})" aria-label="Foto ${i + 1}"><img src="${esc(f)}" alt="Miniatura ${i + 1}" loading="lazy"></button>`).join('')}

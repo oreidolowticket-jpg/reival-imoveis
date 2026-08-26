@@ -484,13 +484,15 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 }
 .cta-anuncie h2 { font-size: clamp(1.4rem, 3vw, 1.9rem); position: relative; }
 .cta-anuncie p { color: #d6d3d1; margin-top: 8px; position: relative; }
-/* Botão branco: é o ponto de maior conversão da página e sobre o preto
-   nada compete com o branco. */
+/* Botão sobre fundo escuro (hero e CTA): branco com texto preto. O verde
+   da marca é escuro demais para aparecer sobre o banner e sobre o preto. */
+.hero-acoes .btn,
 .cta-anuncie .btn {
   background: #fff;
   color: var(--escuro-900) !important;
   box-shadow: 0 6px 16px rgba(0, 0, 0, .45);
 }
+.hero-acoes .btn:hover,
 .cta-anuncie .btn:hover { background: #f2f2f0; }
 
 /* ---------- Rodapé ---------- */

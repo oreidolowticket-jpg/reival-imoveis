@@ -292,6 +292,48 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 .card-preco .rotulo-preco { font-size: .75rem; color: var(--cinza-500); }
 .vazio { text-align: center; color: var(--cinza-500); padding: 40px 0; grid-column: 1 / -1; }
 
+/* ---------- Destaques: tratamento de curadoria ----------
+   Escopo restrito a #destaques — os demais cards do site seguem iguais. */
+#destaques .secao-cabecalho h2::after {
+  content: '';
+  display: block;
+  width: 46px; height: 3px;
+  margin: 16px auto 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--verde-600), var(--verde-400));
+}
+#grade-destaques .card-imovel {
+  border: 1px solid var(--verde-100);
+  box-shadow: 0 12px 32px rgba(20, 53, 42, .10);
+}
+#grade-destaques .card-imovel:hover {
+  border-color: var(--verde-400);
+  box-shadow: 0 20px 44px rgba(20, 53, 42, .17);
+}
+/* Leve escurecimento na base da foto: dá profundidade e uniformiza
+   fotos de qualidades diferentes sem parecer filtro. */
+#grade-destaques .card-foto::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(20, 53, 42, .30), transparent 45%);
+  z-index: 1;
+  pointer-events: none;
+}
+/* Selo discreto de selecionado, no canto oposto às etiquetas. */
+#grade-destaques .card-foto::after {
+  content: '';
+  position: absolute;
+  top: 12px; right: 12px;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, .30);
+  background: rgba(20, 53, 42, .55) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.4-5.8-3-5.8 3 1.1-6.4L2.6 9.4l6.5-.9z'/%3E%3C/svg%3E") center / 14px no-repeat;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 2;
+}
+#grade-destaques .card-preco .valor { font-size: 1.42rem; }
+
 /* ---------- Números / stats ---------- */
 .faixa-stats {
   background: linear-gradient(120deg, var(--verde-600), var(--verde-500));

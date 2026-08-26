@@ -203,8 +203,10 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 .banner-ponto.ativo { background: var(--verde-600); }
 
 /* ---------- Seções ---------- */
+/* Ritmo vertical único de todas as seções. Mexa só aqui: as seções não
+   têm valores próprios, foi o que fazia umas parecerem tortas. */
 .secao { padding: 70px 0; }
-.secao-cabecalho { text-align: center; max-width: 620px; margin: 0 auto 44px; }
+.secao-cabecalho { text-align: center; max-width: 620px; margin: 0 auto 56px; }
 .secao-cabecalho .rotulo { color: var(--verde-600); font-weight: 600; font-size: .85rem; text-transform: uppercase; letter-spacing: .08em; }
 .secao-cabecalho h2 { font-size: clamp(1.6rem, 3.5vw, 2.2rem); font-weight: 700; margin-top: 6px; }
 .secao-cabecalho p { color: var(--cinza-500); margin-top: 10px; }
@@ -222,10 +224,8 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 
 /* Terrenos: fundo verde-claro para não se confundir com o cinza da seção
    de cima, e para emendar na faixa verde-escura que vem logo depois. */
-#terrenos { background: var(--verde-50); padding: 56px 0 60px; }
-/* O respiro acima do cabeçalho vem do padding da seção e o de baixo da
-   margem do cabeçalho. Iguais, o bloco fica centrado entre os carrosséis. */
-#terrenos .secao-cabecalho { margin-bottom: 56px; }
+/* Só o fundo é próprio: o espaçamento vem do padrão de .secao. */
+#terrenos { background: var(--verde-50); }
 .icone-secao {
   width: 52px; height: 52px;
   border-radius: 50%;
@@ -404,7 +404,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   gap: 48px;
   align-items: center;
   max-width: 1000px;
-  margin: 0 auto 52px;
+  margin: 0 auto 56px; /* mesmo respiro dos demais cabeçalhos */
 }
 .sobre-marca-texto .rotulo {
   color: var(--verde-600); font-weight: 600; font-size: .85rem;
@@ -803,7 +803,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   .painel-lateral { position: static; }
   .sobre-topo { grid-template-columns: 1fr; gap: 30px; text-align: center; }
   .foto-dono { --tamanho: 220px; }
-  .sobre-marca { grid-template-columns: 1fr; gap: 30px; text-align: center; margin-bottom: 40px; }
+  .sobre-marca { grid-template-columns: 1fr; gap: 30px; text-align: center; }
   .selo-marca { --tamanho: 190px; margin: 0 auto; }
   .link-marca { justify-content: center; }
   .carrossel-imoveis { grid-auto-columns: calc((100% - 26px) / 2); }
@@ -862,9 +862,9 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   }
   .hero p.sub { font-size: 1rem; }
   .hero-acoes .btn { width: 100%; }
+  /* Mesmo ritmo do desktop, em escala menor. Também sem exceções. */
   .secao { padding: 48px 0; }
-  #terrenos { padding: 42px 0 46px; }
-  #terrenos .secao-cabecalho { margin-bottom: 42px; }
+  .secao-cabecalho, .sobre-marca { margin-bottom: 40px; }
   .icone-secao { width: 46px; height: 46px; margin-bottom: 14px; }
   .faixa-stats { padding: 34px 0; }
   .stat .numero { font-size: 1.5rem; }

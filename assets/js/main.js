@@ -97,11 +97,16 @@ async function carregarImoveis() {
 
   todosImoveis = data || [];
   renderizar(todosImoveis.filter((i) => i.destaque), 'grade-destaques', 'Nenhum destaque no momento.', { faixa: true });
-  renderizar(todosImoveis.filter((i) => !i.somente_destaque), 'grade-imoveis', 'Nenhum imóvel disponível no momento.');
+  renderizar(listagemGeral(), 'grade-imoveis', 'Nenhum imóvel disponível no momento.');
   document.getElementById('stat-imoveis').textContent = todosImoveis.length;
   montarTerrenos();
   preencherCidades();
 }
+
+// Terreno tem seção própria, então fica fora da listagem geral — senão
+// aparece duas vezes na mesma página. A busca continua alcançando todos,
+// caso contrário filtrar por "Terreno" não encontraria nada.
+const listagemGeral = () => todosImoveis.filter((i) => !i.somente_destaque && i.tipo !== 'Terreno');
 
 // A seção de terrenos só existe na página quando há terreno publicado.
 // Seção vazia passa a impressão de site abandonado, então ela fica fora do
@@ -188,7 +193,7 @@ document.getElementById('btn-limpar').addEventListener('click', () => {
   document.getElementById('f-tipo').value = '';
   document.getElementById('f-cidade').value = '';
   document.getElementById('f-bairro').value = '';
-  renderizar(todosImoveis.filter((i) => !i.somente_destaque), 'grade-imoveis', 'Nenhum imóvel disponível no momento.');
+  renderizar(listagemGeral(), 'grade-imoveis', 'Nenhum imóvel disponível no momento.');
   document.getElementById('resultado-info').textContent = 'Confira tudo o que temos disponível.';
   document.getElementById('btn-limpar').style.display = 'none';
 });

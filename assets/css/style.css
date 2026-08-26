@@ -220,6 +220,19 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 .btn-limpar { margin-top: 14px; padding: 8px 20px; font-size: .85rem; }
 .secao-alt { background: var(--cinza-100); }
 
+/* Terrenos: fundo verde-claro para não se confundir com o cinza da seção
+   de cima, e para emendar na faixa verde-escura que vem logo depois. */
+#terrenos { background: var(--verde-50); }
+.icone-secao {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: var(--branco);
+  color: var(--verde-600);
+  display: grid; place-items: center;
+  margin: 0 auto 16px;
+  box-shadow: var(--sombra-suave);
+}
+
 /* ---------- Cards de imóveis ---------- */
 .grade-imoveis {
   display: grid;

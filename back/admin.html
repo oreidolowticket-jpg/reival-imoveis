@@ -72,6 +72,36 @@
     }
     .campo input:focus, .campo select:focus, .campo textarea:focus { border-color: var(--verde-500); }
     .campo textarea { min-height: 110px; resize: vertical; }
+
+    /* Campo com lista de valores já usados */
+    .com-sugestao { position: relative; }
+    .com-sugestao input { padding-right: 40px; }
+    .abre-sugestao {
+      position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+      width: 28px; height: 28px; padding: 0;
+      display: grid; place-items: center;
+      background: none; border: none; border-radius: 7px;
+      color: var(--cinza-500);
+      transition: background .15s, color .15s;
+    }
+    .abre-sugestao:hover { background: var(--cinza-100); color: var(--verde-600); }
+    .lista-sugestao {
+      position: absolute; z-index: 30; top: calc(100% + 5px); left: 0; right: 0;
+      list-style: none; margin: 0; padding: 5px;
+      max-height: 210px; overflow-y: auto;
+      background: var(--branco);
+      border: 1.5px solid var(--cinza-300); border-radius: 10px;
+      box-shadow: var(--sombra);
+    }
+    .lista-sugestao li {
+      padding: 9px 12px; border-radius: 7px;
+      font-size: .9rem; cursor: pointer;
+    }
+    .lista-sugestao li:hover, .lista-sugestao li.marcado {
+      background: var(--verde-50); color: var(--verde-600); font-weight: 600;
+    }
+    .lista-sugestao .vazia { color: var(--cinza-500); cursor: default; font-size: .84rem; }
+    .lista-sugestao .vazia:hover { background: none; color: var(--cinza-500); font-weight: 400; }
     .dica-campo { font-size: .78rem; color: var(--cinza-500); margin-top: 7px; line-height: 1.9; }
     .chip-link {
       background: var(--verde-50); color: var(--verde-600);
@@ -347,11 +377,23 @@
           </div>
           <div class="campo">
             <label for="i-cidade">Cidade</label>
-            <input type="text" id="i-cidade" placeholder="Ex.: São José dos Campos">
+            <div class="com-sugestao">
+              <input type="text" id="i-cidade" placeholder="Ex.: São José dos Campos" autocomplete="off">
+              <button type="button" class="abre-sugestao" data-alvo="i-cidade" aria-label="Ver cidades já usadas" tabindex="-1">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <ul class="lista-sugestao" id="sug-i-cidade" hidden></ul>
+            </div>
           </div>
           <div class="campo">
             <label for="i-bairro">Bairro</label>
-            <input type="text" id="i-bairro" placeholder="Ex.: Vila Adyana">
+            <div class="com-sugestao">
+              <input type="text" id="i-bairro" placeholder="Ex.: Vila Adyana" autocomplete="off">
+              <button type="button" class="abre-sugestao" data-alvo="i-bairro" aria-label="Ver bairros já usados" tabindex="-1">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <ul class="lista-sugestao" id="sug-i-bairro" hidden></ul>
+            </div>
           </div>
           <div class="campo">
             <label for="i-preco">Preço (R$)</label>

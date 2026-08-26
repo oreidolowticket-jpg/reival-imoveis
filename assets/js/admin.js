@@ -171,6 +171,70 @@ function renderLista() {
 
 $('filtro-admin').addEventListener('input', renderLista);
 
+// ---------- Sugestões de cidade e bairro ----------
+// Monta a lista a partir do que já foi cadastrado, para não precisar
+// digitar de novo. Continua aceitando um valor novo, digitado à mão.
+function valoresUsados(campo) {
+  const doBanco = imoveis.map((i) => i[campo]).filter(Boolean);
+  // As cidades também vêm da aba de cidades, que pode ter alguma ainda
+  // sem imóvel cadastrado
+  const extras = campo === 'cidade' ? cidades.map((c) => c.nome).filter(Boolean) : [];
+  return [...new Set([...doBanco, ...extras].map((v) => String(v).trim()))]
+    .sort((a, b) => a.localeCompare(b, 'pt-BR'));
+}
+
+function ligarSugestao(idInput, campo) {
+  const input = $(idInput);
+  const lista = $(`sug-${idInput}`);
+  const botao = document.querySelector(`.abre-sugestao[data-alvo="${idInput}"]`);
+  if (!input || !lista || !botao) return;
+
+  const fechar = () => { lista.hidden = true; };
+
+  const abrir = (filtrar) => {
+    const termo = filtrar ? input.value.trim().toLowerCase() : '';
+    // Bairro só oferece o que existe na cidade digitada, quando houver
+    const cidadeAtual = campo === 'bairro' ? $('i-cidade').value.trim().toLowerCase() : '';
+    let opcoes = valoresUsados(campo);
+    if (cidadeAtual) {
+      const daCidade = [...new Set(imoveis
+        .filter((i) => (i.cidade || '').toLowerCase() === cidadeAtual)
+        .map((i) => i.bairro).filter(Boolean))];
+      if (daCidade.length) opcoes = daCidade.sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    }
+    if (termo) opcoes = opcoes.filter((o) => o.toLowerCase().includes(termo));
+
+    lista.innerHTML = opcoes.length
+      ? opcoes.map((o) => `<li>${esc(o)}</li>`).join('')
+      : '<li class="vazia">Nada cadastrado ainda — pode digitar</li>';
+    lista.hidden = false;
+  };
+
+  botao.addEventListener('click', () => {
+    if (lista.hidden) { abrir(false); input.focus(); } else { fechar(); }
+  });
+  input.addEventListener('input', () => abrir(true));
+  input.addEventListener('focus', () => abrir(true));
+
+  lista.addEventListener('click', (ev) => {
+    const item = ev.target.closest('li');
+    if (!item || item.classList.contains('vazia')) return;
+    input.value = item.textContent;
+    fechar();
+    input.focus();
+  });
+
+  input.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Escape') fechar();
+    if (ev.key === 'Enter' && !lista.hidden) { ev.preventDefault(); fechar(); }
+  });
+
+  // Fecha ao clicar fora, sem atrapalhar o clique numa opção
+  document.addEventListener('pointerdown', (ev) => {
+    if (!lista.hidden && !lista.contains(ev.target) && ev.target !== input && !botao.contains(ev.target)) fechar();
+  });
+}
+
 document.querySelectorAll('.chip-tipo').forEach((chip) => {
   chip.addEventListener('click', () => {
     tipoFiltro = chip.dataset.tipo || '';
@@ -856,5 +920,8 @@ $('form-cidade').addEventListener('submit', async (e) => {
     btn.textContent = 'Salvar cidade';
   }
 });
+
+ligarSugestao('i-cidade', 'cidade');
+ligarSugestao('i-bairro', 'bairro');
 
 iniciar();

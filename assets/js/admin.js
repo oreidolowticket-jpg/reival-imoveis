@@ -140,6 +140,7 @@ function renderLista() {
             <span class="preco">${fmtPreco(i.preco)}</span>
             <span class="etiqueta ${i.finalidade === 'Aluguel' ? 'aluguel' : 'venda'}">${esc(i.finalidade)}</span>
             ${i.destaque ? '<span class="etiqueta destaque">Destaque</span>' : ''}
+            ${i.somente_destaque ? '<span class="etiqueta venda">Só destaques</span>' : ''}
             ${i.ativo ? '' : '<span class="etiqueta oculto">Oculto</span>'}
             <span>${fotos.length} foto${fotos.length === 1 ? '' : 's'}</span>
           </div>
@@ -212,6 +213,7 @@ function abrirForm(imovel) {
     $('i-endereco').value = imovel.endereco || '';
     $('i-descricao').value = imovel.descricao || '';
     $('i-destaque').checked = !!imovel.destaque;
+    $('i-somente-destaque').checked = !!imovel.somente_destaque;
     $('i-financiamento').checked = !!imovel.aceita_financiamento;
     $('i-ativo').checked = !!imovel.ativo;
     fotosForm = (Array.isArray(imovel.fotos) ? imovel.fotos : []).map((url) => ({ url }));
@@ -339,7 +341,9 @@ $('form-imovel').addEventListener('submit', async (e) => {
       area: numOuNull('i-area'),
       endereco: $('i-endereco').value.trim() || null,
       descricao: $('i-descricao').value.trim() || null,
-      destaque: $('i-destaque').checked,
+      // "Somente destaques" força o imóvel a ser destaque, senão não apareceria em lugar nenhum
+      destaque: $('i-destaque').checked || $('i-somente-destaque').checked,
+      somente_destaque: $('i-somente-destaque').checked,
       aceita_financiamento: $('i-financiamento').checked,
       ativo: $('i-ativo').checked,
       fotos,

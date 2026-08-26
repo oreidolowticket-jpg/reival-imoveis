@@ -83,11 +83,36 @@ async function carregarImoveis() {
   }
 
   todosImoveis = data || [];
-  renderizar(todosImoveis.filter((i) => i.destaque).slice(0, 6), 'grade-destaques', 'Nenhum destaque no momento.');
-  renderizar(todosImoveis, 'grade-imoveis', 'Nenhum imóvel disponível no momento.');
+  renderizar(todosImoveis.filter((i) => i.destaque), 'grade-destaques', 'Nenhum destaque no momento.');
+  renderizar(todosImoveis.filter((i) => !i.somente_destaque), 'grade-imoveis', 'Nenhum imóvel disponível no momento.');
   document.getElementById('stat-imoveis').textContent = todosImoveis.length;
   preencherCidades();
 }
+
+// Arrastar o carrossel de destaques com o mouse (no toque o navegador já resolve)
+(function arrastarCarrossel() {
+  const el = document.getElementById('grade-destaques');
+  let inicioX = null;
+  let inicioScroll = 0;
+  let arrastou = false;
+
+  el.addEventListener('pointerdown', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    inicioX = e.clientX;
+    inicioScroll = el.scrollLeft;
+    arrastou = false;
+  });
+  window.addEventListener('pointermove', (e) => {
+    if (inicioX === null) return;
+    const delta = e.clientX - inicioX;
+    if (Math.abs(delta) > 6) arrastou = true;
+    el.scrollLeft = inicioScroll - delta;
+  });
+  window.addEventListener('pointerup', () => { inicioX = null; });
+  el.addEventListener('click', (e) => {
+    if (arrastou) { e.preventDefault(); e.stopPropagation(); arrastou = false; }
+  }, true);
+})();
 
 function preencherCidades() {
   const cidades = [...new Set(todosImoveis.map((i) => i.cidade).filter(Boolean))]
@@ -106,6 +131,7 @@ document.getElementById('form-busca').addEventListener('submit', (e) => {
   const termo = document.getElementById('f-bairro').value.trim().toLowerCase();
 
   const filtrados = todosImoveis.filter((i) => {
+    if (i.somente_destaque) return false;
     if (finalidade && i.finalidade !== finalidade) return false;
     if (tipo && i.tipo !== tipo) return false;
     if (cidade && i.cidade !== cidade) return false;

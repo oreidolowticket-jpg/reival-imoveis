@@ -215,6 +215,24 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 26px;
 }
+
+/* Carrossel horizontal de imóveis (destaques) */
+.carrossel-imoveis {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - 52px) / 3);
+  gap: 26px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 4px 4px 16px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  cursor: grab;
+}
+.carrossel-imoveis::-webkit-scrollbar { display: none; }
+.carrossel-imoveis:active { cursor: grabbing; }
+.carrossel-imoveis .card-imovel { scroll-snap-align: start; }
+.carrossel-imoveis .vazio { width: 100%; white-space: nowrap; }
 .card-imovel {
   background: var(--branco);
   border-radius: var(--raio);
@@ -485,6 +503,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   .rodape-grid { grid-template-columns: 1fr 1fr; }
   .imovel-grid { grid-template-columns: 1fr; }
   .painel-lateral { position: static; }
+  .carrossel-imoveis { grid-auto-columns: calc((100% - 26px) / 2); }
 }
 @media (max-width: 640px) {
   .nav {
@@ -515,6 +534,8 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   .banners-pontos { margin-top: 10px; }
 
   .logo-rodape img { height: 42px; }
+
+  .carrossel-imoveis { grid-auto-columns: 82%; gap: 14px; }
 
   /* Cidades em 2 colunas */
   .grade-cidades { grid-template-columns: repeat(2, 1fr); gap: 10px; }

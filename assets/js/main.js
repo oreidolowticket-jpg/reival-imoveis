@@ -101,6 +101,7 @@ async function carregarImoveis() {
     inicioX = e.clientX;
     inicioScroll = el.scrollLeft;
     arrastou = false;
+    el.classList.add('arrastando');
   });
   window.addEventListener('pointermove', (e) => {
     if (inicioX === null) return;
@@ -108,7 +109,10 @@ async function carregarImoveis() {
     if (Math.abs(delta) > 6) arrastou = true;
     el.scrollLeft = inicioScroll - delta;
   });
-  window.addEventListener('pointerup', () => { inicioX = null; });
+  window.addEventListener('pointerup', () => {
+    inicioX = null;
+    el.classList.remove('arrastando');
+  });
   el.addEventListener('click', (e) => {
     if (arrastou) { e.preventDefault(); e.stopPropagation(); arrastou = false; }
   }, true);

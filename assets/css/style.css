@@ -224,12 +224,14 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   grid-auto-columns: calc((100% - 52px) / 3);
   gap: 26px;
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
+  scroll-snap-type: x proximity;
+  scroll-behavior: smooth;
   padding: 4px 4px 16px;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
   cursor: grab;
 }
+.carrossel-imoveis.arrastando { scroll-snap-type: none; scroll-behavior: auto; }
 .carrossel-imoveis::-webkit-scrollbar { display: none; }
 .carrossel-imoveis:active { cursor: grabbing; }
 .carrossel-imoveis .card-imovel { scroll-snap-align: start; }
@@ -301,8 +303,8 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 
 /* ---------- Foto do fundador ---------- */
 .foto-dono {
-  width: 160px; height: 160px;
-  margin: 0 auto 22px;
+  width: 230px; height: 230px;
+  margin: 0 auto 26px;
   border-radius: 50%;
   padding: 5px;
   background: linear-gradient(135deg, var(--laranja-400), var(--laranja-600));
@@ -583,8 +585,8 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   .logo-rodape img { height: 42px; }
 
   .carrossel-imoveis { grid-auto-columns: 82%; gap: 14px; }
-  .foto-dono { width: 132px; height: 132px; }
-  .foto-dono-badge { width: 32px; height: 32px; }
+  .foto-dono { width: 180px; height: 180px; }
+  .foto-dono-badge { width: 34px; height: 34px; }
 
   /* Cidades em 2 colunas */
   .grade-cidades { grid-template-columns: repeat(2, 1fr); gap: 10px; }

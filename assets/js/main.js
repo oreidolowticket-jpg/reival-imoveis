@@ -27,7 +27,10 @@ const ICONES = {
 };
 
 // ---------- Renderização de cards ----------
-function cardImovel(imovel) {
+const ESTRELA_FAIXA = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.4-5.8-3-5.8 3 1.1-6.4L2.6 9.4l6.5-.9z"/></svg>`;
+
+// opcoes.faixa: cabecalho verde com os selos e a estrela, usado so nos destaques
+function cardImovel(imovel, opcoes = {}) {
   const fotos = Array.isArray(imovel.fotos) ? imovel.fotos : [];
   const foto = fotos.length
     ? `<img src="${esc(fotos[0])}" alt="${esc(tituloImovel(imovel))}" loading="lazy">`
@@ -39,13 +42,21 @@ function cardImovel(imovel) {
   if (imovel.vagas) atributos.push(`<span>${ICONES.carro} ${imovel.vagas} vaga${imovel.vagas > 1 ? 's' : ''}</span>`);
   if (imovel.area) atributos.push(`<span>${ICONES.area} ${Number(imovel.area).toLocaleString('pt-BR')} m²</span>`);
 
+  const selos = (classe) => `
+    <span class="${classe} ${imovel.finalidade === 'Aluguel' ? 'aluguel' : ''}">${esc(imovel.finalidade)}</span>
+    ${imovel.aceita_financiamento ? `<span class="${classe} financia">Financia</span>` : ''}`;
+
+  const faixa = opcoes.faixa ? `
+    <div class="card-faixa">
+      <div class="faixa-selos">${selos('selo-faixa')}</div>
+      <span class="faixa-estrela">${ESTRELA_FAIXA}</span>
+    </div>` : '';
+
   return `
     <a class="card-imovel" href="imovel?id=${imovel.id}" target="_blank" rel="noopener">
+      ${faixa}
       <div class="card-foto">
-        <div class="card-badges">
-          <span class="badge ${imovel.finalidade === 'Aluguel' ? 'aluguel' : ''}">${esc(imovel.finalidade)}</span>
-          ${imovel.aceita_financiamento ? '<span class="badge financia">Financia</span>' : ''}
-        </div>
+        ${opcoes.faixa ? '' : `<div class="card-badges">${selos('badge')}</div>`}
         ${foto}
       </div>
       <div class="card-corpo">
@@ -61,9 +72,11 @@ function cardImovel(imovel) {
     </a>`;
 }
 
-function renderizar(lista, alvo, msgVazio) {
+function renderizar(lista, alvo, msgVazio, opcoes = {}) {
   const el = document.getElementById(alvo);
-  el.innerHTML = lista.length ? lista.map(cardImovel).join('') : `<p class="vazio">${msgVazio}</p>`;
+  el.innerHTML = lista.length
+    ? lista.map((imovel) => cardImovel(imovel, opcoes)).join('')
+    : `<p class="vazio">${msgVazio}</p>`;
 }
 
 // ---------- Carregamento ----------
@@ -83,7 +96,7 @@ async function carregarImoveis() {
   }
 
   todosImoveis = data || [];
-  renderizar(todosImoveis.filter((i) => i.destaque), 'grade-destaques', 'Nenhum destaque no momento.');
+  renderizar(todosImoveis.filter((i) => i.destaque), 'grade-destaques', 'Nenhum destaque no momento.', { faixa: true });
   renderizar(todosImoveis.filter((i) => !i.somente_destaque), 'grade-imoveis', 'Nenhum imóvel disponível no momento.');
   document.getElementById('stat-imoveis').textContent = todosImoveis.length;
   preencherCidades();

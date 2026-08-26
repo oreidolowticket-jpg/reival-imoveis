@@ -472,6 +472,17 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 .card-cidade .cidade-nome { font-size: 1.15rem; font-weight: 700; text-shadow: 0 2px 8px rgba(0,0,0,.5); color: #fff; }
 .card-cidade .cidade-qtd { font-size: .8rem; opacity: .9; text-shadow: 0 1px 6px rgba(0,0,0,.5); }
 
+/* Botão sobre fundo escuro: o verde da marca some no preto, então
+   inverte para o verde claro com o texto escuro por cima. */
+.hero-acoes .btn,
+.cta-anuncie .btn {
+  background: var(--verde-400);
+  color: var(--verde-600) !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .35);
+}
+.hero-acoes .btn:hover,
+.cta-anuncie .btn:hover { background: #7ad0af; }
+
 /* ---------- CTA anuncie ---------- */
 .cta-anuncie {
   background: #000;

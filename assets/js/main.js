@@ -293,6 +293,14 @@ function montarBanners() {
       : `<div class="banner-slide ${i === 0 ? 'ativo' : ''}">${img}</div>`;
   }).join('');
 
+  // Setas só fazem sentido com mouse; no toque o deslize já resolve, e o
+  // CSS as esconde abaixo de 900px.
+  if (bannersSite.length > 1) {
+    cont.insertAdjacentHTML('beforeend', `
+      <button class="galeria-nav ant banner-seta" type="button" aria-label="Banner anterior">&#10094;</button>
+      <button class="galeria-nav prox banner-seta" type="button" aria-label="Próximo banner">&#10095;</button>`);
+  }
+
   document.getElementById('banners-pontos').innerHTML = bannersSite.length > 1
     ? bannersSite.map((_, i) => `<button class="banner-ponto ${i === 0 ? 'ativo' : ''}" data-i="${i}" aria-label="Ir para o banner ${i + 1}"></button>`).join('')
     : '';
@@ -302,6 +310,14 @@ function montarBanners() {
   if (bannersSite.length > 1) {
     document.querySelectorAll('.banner-ponto').forEach((p) => {
       p.addEventListener('click', () => mudarBanner(Number(p.dataset.i)));
+    });
+    cont.querySelector('.banner-seta.ant').addEventListener('click', (ev) => {
+      ev.preventDefault(); ev.stopPropagation();
+      mudarBanner(bannerAtivo - 1);
+    });
+    cont.querySelector('.banner-seta.prox').addEventListener('click', (ev) => {
+      ev.preventDefault(); ev.stopPropagation();
+      mudarBanner(bannerAtivo + 1);
     });
     // O contêiner não é recriado, então os ouvintes de arrasto entram uma vez só
     if (!deslizeAtivado) { ativarDeslize(cont); deslizeAtivado = true; }

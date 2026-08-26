@@ -3,9 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Imóvel | Reival Imóveis</title>
-  <meta name="description" content="Veja fotos, valores e todos os detalhes deste imóvel em São Paulo e região.">
+  <title>Todos os imóveis em São Paulo e região | Reival Imóveis</title>
+  <meta name="description" content="Catálogo completo da Reival Imóveis: casas, apartamentos, terrenos e imóveis comerciais para comprar ou alugar em São Paulo e região.">
   <meta name="theme-color" content="#15352a">
+  <link rel="canonical" href="https://www.reival.site/imoveis">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Reival Imóveis">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:title" content="Todos os imóveis | Reival Imóveis">
+  <meta property="og:description" content="Casas, apartamentos, terrenos e imóveis comerciais em São Paulo e região.">
+  <meta property="og:url" content="https://www.reival.site/imoveis">
+  <meta property="og:image" content="https://www.reival.site/assets/logo.png">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://vopmedyztnbrqckjoapd.supabase.co" crossorigin>
@@ -48,23 +57,48 @@
     </div>
   </header>
 
-  <!-- Conteúdo -->
   <main class="pagina-imovel">
-    <div class="container" id="conteudo-imovel">
-      <p style="color:var(--cinza-500);padding:60px 0;text-align:center;">Carregando imóvel...</p>
+    <div class="container">
+      <nav class="breadcrumb">
+        <a href="index.html">Início</a> › <span>Todos os imóveis</span>
+      </nav>
+
+      <div class="catalogo-topo">
+        <h1>Todos os imóveis</h1>
+        <p id="contagem">Carregando...</p>
+      </div>
+
+      <!-- Filtros -->
+      <div class="catalogo-filtros">
+        <div class="campo">
+          <label for="f-finalidade">Finalidade</label>
+          <select id="f-finalidade">
+            <option value="">Venda e Aluguel</option>
+            <option value="Venda">Venda</option>
+            <option value="Aluguel">Aluguel</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="f-cidade">Cidade</label>
+          <select id="f-cidade">
+            <option value="">Todas as cidades</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="f-termo">Buscar</label>
+          <input type="text" id="f-termo" placeholder="Bairro, código ou palavra-chave">
+        </div>
+      </div>
+
+      <!-- Atalhos por categoria -->
+      <nav class="atalhos-tipo" id="atalhos" aria-label="Ir para uma categoria"></nav>
+
+      <!-- Grupos -->
+      <div id="grupos">
+        <p class="vazio">Carregando imóveis...</p>
+      </div>
     </div>
   </main>
-
-  <!-- Similares -->
-  <section class="secao" id="secao-similares" style="display:none;padding-top:0;">
-    <div class="container">
-      <div class="secao-cabecalho">
-        <span class="rotulo">Você também pode gostar</span>
-        <h2>Imóveis semelhantes</h2>
-      </div>
-      <div class="grade-imoveis" id="grade-similares"></div>
-    </div>
-  </section>
 
   <!-- Rodapé -->
   <footer class="rodape" id="contato" style="margin-top:30px;">
@@ -110,6 +144,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="assets/js/config.js"></script>
-  <script src="assets/js/imovel.js"></script>
+  <script src="assets/js/imoveis.js"></script>
 </body>
 </html>

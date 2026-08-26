@@ -8,6 +8,7 @@ module.exports = async (req, res) => {
 
   const urls = [
     { loc: `${base}/`, lastmod: null, priority: '1.0' },
+    { loc: `${base}/imoveis`, lastmod: null, priority: '0.9' },
     { loc: `${base}/corretor`, lastmod: null, priority: '0.6' },
   ];
 

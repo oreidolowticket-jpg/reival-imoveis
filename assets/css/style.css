@@ -207,6 +207,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 .secao-cabecalho .rotulo { color: var(--laranja-600); font-weight: 600; font-size: .85rem; text-transform: uppercase; letter-spacing: .08em; }
 .secao-cabecalho h2 { font-size: clamp(1.6rem, 3.5vw, 2.2rem); font-weight: 700; margin-top: 6px; }
 .secao-cabecalho p { color: var(--cinza-500); margin-top: 10px; }
+.btn-limpar { margin-top: 14px; padding: 8px 20px; font-size: .85rem; }
 .secao-alt { background: var(--cinza-100); }
 
 /* ---------- Cards de imóveis ---------- */

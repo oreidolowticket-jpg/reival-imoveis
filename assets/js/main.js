@@ -145,7 +145,19 @@ document.getElementById('form-busca').addEventListener('submit', (e) => {
   renderizar(filtrados, 'grade-imoveis', 'Nenhum imóvel encontrado com esses filtros.');
   document.getElementById('resultado-info').textContent =
     `${filtrados.length} imóve${filtrados.length === 1 ? 'l encontrado' : 'is encontrados'}.`;
+  document.getElementById('btn-limpar').style.display = '';
   document.getElementById('imoveis').scrollIntoView({ behavior: 'smooth' });
+});
+
+// ---------- Limpar filtros ----------
+document.getElementById('btn-limpar').addEventListener('click', () => {
+  document.getElementById('f-finalidade').value = '';
+  document.getElementById('f-tipo').value = '';
+  document.getElementById('f-cidade').value = '';
+  document.getElementById('f-bairro').value = '';
+  renderizar(todosImoveis.filter((i) => !i.somente_destaque), 'grade-imoveis', 'Nenhum imóvel disponível no momento.');
+  document.getElementById('resultado-info').textContent = 'Confira tudo o que temos disponível.';
+  document.getElementById('btn-limpar').style.display = 'none';
 });
 
 // ---------- Cards de cidades ----------

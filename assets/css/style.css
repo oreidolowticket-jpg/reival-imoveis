@@ -169,7 +169,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 .secao-banners { padding: 46px 0 0; }
 .carrossel-banners {
   position: relative;
-  aspect-ratio: 3 / 1;
+  aspect-ratio: 1500 / 650;
   border-radius: var(--raio);
   overflow: hidden;
   /* Sombra projetada só para baixo: descola o banner do que vem depois
@@ -816,7 +816,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   /* Banners de ponta a ponta */
   .secao-banners { padding: 30px 0 0; }
   .secao-banners .container { padding: 0; }
-  .carrossel-banners { border-radius: 0; aspect-ratio: 3 / 1; box-shadow: 0 14px 24px -14px rgba(21, 53, 42, .45); }
+  .carrossel-banners { border-radius: 0; aspect-ratio: 1500 / 650; box-shadow: 0 14px 24px -14px rgba(21, 53, 42, .45); }
   .banners-pontos { margin-top: 10px; }
 
   .logo-rodape img { height: 74px; }

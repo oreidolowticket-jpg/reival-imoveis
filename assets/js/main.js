@@ -264,8 +264,10 @@ function montarBanners() {
     // Link interno (#secao ou /pagina) abre na mesma aba; externo em nova.
     const interno = /^[#/]/.test(b.link || '');
     const alvo = interno ? '' : ' target="_blank" rel="noopener"';
+    // draggable="false" no <a>: sem isso o navegador inicia o arrasto nativo
+    // de link e o gesto de trocar de banner nunca chega até o carrossel.
     return b.link
-      ? `<a class="banner-slide ${i === 0 ? 'ativo' : ''}" href="${esc(b.link)}"${alvo}>${img}</a>`
+      ? `<a class="banner-slide ${i === 0 ? 'ativo' : ''}" href="${esc(b.link)}"${alvo} draggable="false">${img}</a>`
       : `<div class="banner-slide ${i === 0 ? 'ativo' : ''}">${img}</div>`;
   }).join('');
 
@@ -309,6 +311,10 @@ function ativarDeslize(cont) {
 
   cont.addEventListener('pointercancel', () => { inicioX = null; });
 
+  // Trava o arrasto nativo do navegador (imagem e link) para o gesto
+  // pertencer ao carrossel
+  cont.addEventListener('dragstart', (e) => e.preventDefault());
+
   // Evita abrir o link do banner quando o gesto foi um deslize
   cont.addEventListener('click', (e) => {
     if (arrastou) { e.preventDefault(); e.stopPropagation(); }
@@ -324,7 +330,7 @@ function mudarBanner(i) {
 
 function reiniciarAutoplay() {
   clearInterval(bannerTimer);
-  bannerTimer = setInterval(() => mudarBanner(bannerAtivo + 1), 5000);
+  bannerTimer = setInterval(() => mudarBanner(bannerAtivo + 1), 9000);
 }
 
 // ---------- Menu mobile ----------

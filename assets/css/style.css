@@ -181,7 +181,8 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   cursor: grab;
 }
 .carrossel-banners:active { cursor: grabbing; }
-.banner-slide img { -webkit-user-drag: none; }
+/* O slide vira <a> quando tem link; sem isto o navegador arrasta o link. */
+.banner-slide, .banner-slide img { -webkit-user-drag: none; user-select: none; }
 .banner-slide {
   position: absolute; inset: 0;
   opacity: 0;

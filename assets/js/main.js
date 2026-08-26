@@ -89,9 +89,9 @@ async function carregarImoveis() {
   preencherCidades();
 }
 
-// Arrastar o carrossel de destaques com o mouse (no toque o navegador já resolve)
+// Arrastar o carrossel de imóveis com o mouse (no toque o navegador já resolve)
 (function arrastarCarrossel() {
-  const el = document.getElementById('grade-destaques');
+  const el = document.getElementById('grade-imoveis');
   let inicioX = null;
   let inicioScroll = 0;
   let arrastou = false;

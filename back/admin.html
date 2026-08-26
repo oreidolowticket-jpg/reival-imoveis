@@ -107,6 +107,18 @@
     .busca-admin { display: flex; gap: 10px; flex: 1; max-width: 380px; }
     .busca-admin input { flex: 1; border: 1.5px solid var(--cinza-300); border-radius: 10px; padding: 10px 14px; outline: none; }
 
+    .filtros-tipo { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .chip-tipo {
+      background: var(--branco); color: var(--cinza-500);
+      border: 1.5px solid var(--cinza-300); border-radius: 999px;
+      padding: 7px 16px; font-size: .82rem; font-weight: 600; font-family: inherit;
+      transition: background .15s, color .15s, border-color .15s;
+    }
+    .chip-tipo:hover { border-color: var(--verde-500); color: var(--verde-600); }
+    .chip-tipo.ativo {
+      background: var(--verde-600); color: #fff; border-color: var(--verde-600);
+    }
+
     .lista-imoveis { display: grid; gap: 14px; }
     .linha-imovel {
       background: var(--branco); border-radius: var(--raio); box-shadow: var(--sombra);
@@ -280,9 +292,18 @@
       <div class="barra-acoes">
         <h2>Imóveis</h2>
         <div class="busca-admin">
-          <input type="text" id="filtro-admin" placeholder="Buscar por título, bairro ou código...">
+          <input type="text" id="filtro-admin" placeholder="Buscar por título, tipo, bairro ou código...">
         </div>
         <button class="btn" id="btn-novo">+ Novo imóvel</button>
+      </div>
+
+      <div class="filtros-tipo">
+        <button type="button" class="chip-tipo ativo" data-tipo="">Todos</button>
+        <button type="button" class="chip-tipo" data-tipo="Casa">Casas</button>
+        <button type="button" class="chip-tipo" data-tipo="Apartamento">Apartamentos</button>
+        <button type="button" class="chip-tipo" data-tipo="Terreno">Terrenos</button>
+        <button type="button" class="chip-tipo" data-tipo="Comercial">Comercial</button>
+        <button type="button" class="chip-tipo" data-tipo="Chácara">Chácaras</button>
       </div>
 
       <div class="lista-imoveis" id="lista-imoveis">

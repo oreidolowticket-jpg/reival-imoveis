@@ -116,20 +116,24 @@ function renderResumo() {
   $('resumo-venda').textContent = imoveis.filter((i) => i.finalidade === 'Venda' && i.ativo).length;
 }
 
+let tipoFiltro = '';
+
 function renderLista() {
   const termo = $('filtro-admin').value.trim().toLowerCase();
-  const lista = termo
-    ? imoveis.filter((i) => `${i.titulo} ${i.bairro || ''} ${i.cidade || ''} ${i.codigo}`.toLowerCase().includes(termo))
-    : imoveis;
+  const lista = imoveis.filter((i) => {
+    if (tipoFiltro && i.tipo !== tipoFiltro) return false;
+    if (!termo) return true;
+    return `${i.titulo} ${i.tipo} ${i.bairro || ''} ${i.cidade || ''} ${i.codigo}`.toLowerCase().includes(termo);
+  });
+
+  document.querySelectorAll('.chip-tipo').forEach((c) => {
+    c.classList.toggle('ativo', (c.dataset.tipo || '') === tipoFiltro);
+  });
 
   if (!lista.length) {
     $('lista-imoveis').innerHTML = '<p style="color:var(--cinza-500);">Nenhum imóvel encontrado.</p>';
     return;
   }
-
-  // Com a busca ativa a lista mostra so uma parte, entao reordenar
-  // bagunçaria os que estao fora dela. A alca fica desabilitada.
-  const podeOrdenar = !termo;
 
   $('lista-imoveis').innerHTML = lista.map((i) => {
     const fotos = Array.isArray(i.fotos) ? i.fotos : [];
@@ -138,8 +142,8 @@ function renderLista() {
       : '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>';
     return `
       <div class="linha-imovel linha-ordenavel ${i.ativo ? '' : 'inativo'}" data-id="${i.id}">
-        <button type="button" class="alca" ${podeOrdenar ? '' : 'disabled'}
-          title="${podeOrdenar ? 'Arraste para mudar a ordem' : 'Limpe a busca para reordenar'}"
+        <button type="button" class="alca"
+          title="Arraste para mudar a ordem"
           aria-label="Mover ${esc(tituloImovel(i))}">${ICONE_ALCA}</button>
         <div class="linha-foto">${foto}</div>
         <div class="linha-info">
@@ -166,6 +170,13 @@ function renderLista() {
 }
 
 $('filtro-admin').addEventListener('input', renderLista);
+
+document.querySelectorAll('.chip-tipo').forEach((chip) => {
+  chip.addEventListener('click', () => {
+    tipoFiltro = chip.dataset.tipo || '';
+    renderLista();
+  });
+});
 
 // ---------- Reordenar imóveis arrastando pela alça ----------
 // A captura do ponteiro fica no container (que nunca sai do lugar) e não na
@@ -205,11 +216,25 @@ $('filtro-admin').addEventListener('input', renderLista);
 })();
 
 async function salvarOrdem() {
-  const ids = [...$('lista-imoveis').querySelectorAll('.linha-imovel')].map((l) => l.dataset.id);
+  // Só o que está na tela pode ter mudado de lugar. Com filtro ativo, os
+  // itens de fora precisam continuar onde estavam, então os visíveis são
+  // reencaixados nas posições que esse conjunto já ocupava na lista cheia.
+  const visiveis = [...$('lista-imoveis').querySelectorAll('.linha-imovel')]
+    .map((l) => imoveis.find((i) => i.id === l.dataset.id))
+    .filter(Boolean);
+  if (!visiveis.length) return;
+
+  const visivel = new Set(visiveis.map((i) => i.id));
+  const completa = [...imoveis];
+  const posicoes = [];
+  completa.forEach((i, k) => { if (visivel.has(i.id)) posicoes.push(k); });
+  posicoes.forEach((pos, k) => { completa[pos] = visiveis[k]; });
+
+  // Renumera tudo: garante posições únicas mesmo com itens novos, que
+  // nascem em zero.
   const mudancas = [];
-  ids.forEach((id, indice) => {
-    const imovel = imoveis.find((i) => i.id === id);
-    if (imovel && imovel.ordem !== indice + 1) mudancas.push({ imovel, ordem: indice + 1 });
+  completa.forEach((imovel, k) => {
+    if (imovel.ordem !== k + 1) mudancas.push({ imovel, ordem: k + 1 });
   });
   if (!mudancas.length) return;
 
@@ -225,7 +250,7 @@ async function salvarOrdem() {
   }
 
   mudancas.forEach((m) => { m.imovel.ordem = m.ordem; });
-  imoveis.sort((a, b) => a.ordem - b.ordem);
+  imoveis = completa;
   toast('Ordem atualizada!');
 }
 

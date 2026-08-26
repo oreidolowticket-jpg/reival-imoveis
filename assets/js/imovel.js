@@ -24,6 +24,8 @@ const ICONES = {
   pino: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
   cifrao: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
   casa: '<svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>',
+  conversa: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>',
+  agenda: '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg>',
 };
 
 function naoEncontrado() {
@@ -103,8 +105,8 @@ function renderImovel(imovel) {
           <div class="preco-grande">${fmtPreco(imovel.preco, imovel.finalidade)}</div>
           <span class="rotulo-preco">${imovel.finalidade === 'Aluguel' ? 'Valor do aluguel' : 'Valor de venda'}</span>
           ${chips.length ? `<div class="atributos-grade">${chips.join('')}</div>` : ''}
-          <a class="btn" href="${zapLink(msg)}" target="_blank" rel="noopener">&#128172; Tenho interesse</a>
-          <a class="btn btn-fantasma" style="margin-top:10px;" href="${zapLink(msgVisita)}" target="_blank" rel="noopener">&#128197; Agendar visita</a>
+          <a class="btn" href="${zapLink(msg)}" target="_blank" rel="noopener">${ICONES.conversa}Tenho interesse</a>
+          <a class="btn btn-fantasma" style="margin-top:10px;" href="${zapLink(msgVisita)}" target="_blank" rel="noopener">${ICONES.agenda}Agendar visita</a>
           <p class="obs-codigo">Ao entrar em contato, informe o código <strong>${imovel.codigo}</strong>.</p>
         </div>
       </aside>
@@ -173,11 +175,11 @@ document.getElementById('menu-toggle').addEventListener('click', () => {
   const msgGeral = 'Olá! Vim pelo site Reival Imóveis e gostaria de mais informações.';
   const msgAnuncio = 'Olá! Gostaria de anunciar meu imóvel com a Reival Imóveis.';
   document.getElementById('topbar-telefone').href = zapLink(msgGeral);
-  document.getElementById('topbar-telefone').innerHTML = `&#128222; ${CONFIG.TELEFONE_EXIBICAO}`;
+  document.getElementById('topbar-telefone').innerHTML = `${ICONES_CONTATO.whatsapp}${CONFIG.TELEFONE_EXIBICAO}`;
   document.getElementById('topbar-instagram').href = CONFIG.INSTAGRAM;
   const topEmail = document.getElementById('topbar-email');
   topEmail.href = `mailto:${CONFIG.EMAIL_CONTATO}`;
-  topEmail.innerHTML = `&#9993; ${CONFIG.EMAIL_CONTATO}`;
+  topEmail.innerHTML = `${ICONES_CONTATO.email}${CONFIG.EMAIL_CONTATO}`;
   document.getElementById('zap-flutuante').href = zapLink(msgGeral);
   document.getElementById('nav-anunciar').href = zapLink(msgAnuncio);
   document.getElementById('rodape-telefone').textContent = CONFIG.TELEFONE_EXIBICAO;

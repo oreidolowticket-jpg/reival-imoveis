@@ -4,11 +4,11 @@
    troque as cores aqui quando a marca for definida.
    ============================================================ */
 :root {
-  --verde-600: #14352a;
-  --verde-500: #1c4a3b;
-  --verde-400: #59c09a;
-  --verde-100: #d3eee4;
-  --verde-50: #edf8f4;
+  --verde-600: #15352a; /* base: botões, ícones, títulos de apoio */
+  --verde-500: #256e53; /* médio: hover, gradientes, faixa de destaque */
+  --verde-400: #76af98; /* claro: texto e detalhe sobre fundo escuro */
+  --verde-100: #d8e8e2; /* tinta clara: fundos de placeholder */
+  --verde-50: #eff6f3;  /* quase branco: selos e anéis */
   --escuro-900: #1c1917;
   --escuro-700: #44403c;
   --cinza-500: #78716c;
@@ -44,7 +44,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 
 /* ---------- Topbar ---------- */
 .topbar {
-  background: #000;
+  background: var(--verde-600);
   color: #e7e5e4;
   font-size: 0.8rem;
   padding: 8px 0;
@@ -53,7 +53,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 .topbar-contatos { display: flex; align-items: center; gap: 18px; }
 .topbar a { color: #fff; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; transition: color .2s; }
 .topbar a:hover { color: var(--verde-400); }
-.topbar-contatos svg { display: block; }
+.topbar-contatos svg { display: block; flex-shrink: 0; }
 
 /* ---------- Header / Nav ---------- */
 .header {
@@ -120,8 +120,8 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 .hero-conteudo { max-width: 640px; }
 .hero .selo {
   display: inline-flex; align-items: center; gap: 8px;
-  background: rgba(89, 192, 154, .15);
-  border: 1px solid rgba(89, 192, 154, .5);
+  background: rgba(118, 175, 152, .15);
+  border: 1px solid rgba(118, 175, 152, .5);
   color: var(--verde-400);
   font-size: .8rem; font-weight: 600;
   border-radius: 999px;
@@ -172,7 +172,9 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   aspect-ratio: 3 / 1;
   border-radius: var(--raio);
   overflow: hidden;
-  box-shadow: var(--sombra-suave);
+  /* Sombra projetada só para baixo: descola o banner do que vem depois
+     sem virar um contorno em volta. */
+  box-shadow: 0 18px 30px -16px rgba(21, 53, 42, .45);
   background: var(--cinza-100);
   touch-action: pan-y;
   user-select: none;
@@ -344,7 +346,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 .selo-faixa.financia {
   background: transparent;
   color: var(--verde-400);
-  box-shadow: inset 0 0 0 1px rgba(89, 192, 154, .55);
+  box-shadow: inset 0 0 0 1px rgba(118, 175, 152, .55);
 }
 .selo-faixa.aluguel { background: #fff; color: var(--verde-600); }
 /* Leve escurecimento na base da foto: dá profundidade e uniformiza
@@ -466,17 +468,6 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 .card-cidade .cidade-nome { font-size: 1.15rem; font-weight: 700; text-shadow: 0 2px 8px rgba(0,0,0,.5); color: #fff; }
 .card-cidade .cidade-qtd { font-size: .8rem; opacity: .9; text-shadow: 0 1px 6px rgba(0,0,0,.5); }
 
-/* Botão sobre fundo escuro: o verde da marca some no preto, então
-   inverte para o verde claro com o texto escuro por cima. */
-.hero-acoes .btn,
-.cta-anuncie .btn {
-  background: var(--verde-400);
-  color: var(--verde-600) !important;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, .35);
-}
-.hero-acoes .btn:hover,
-.cta-anuncie .btn:hover { background: #7ad0af; }
-
 /* ---------- CTA anuncie ---------- */
 .cta-anuncie {
   background: #000;
@@ -493,6 +484,14 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 }
 .cta-anuncie h2 { font-size: clamp(1.4rem, 3vw, 1.9rem); position: relative; }
 .cta-anuncie p { color: #d6d3d1; margin-top: 8px; position: relative; }
+/* Botão branco: é o ponto de maior conversão da página e sobre o preto
+   nada compete com o branco. */
+.cta-anuncie .btn {
+  background: #fff;
+  color: var(--escuro-900) !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .45);
+}
+.cta-anuncie .btn:hover { background: #f2f2f0; }
 
 /* ---------- Rodapé ---------- */
 .rodape { background: #000; color: #d6d3d1; padding: 60px 0 0; margin-top: 70px; }
@@ -505,7 +504,10 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
    sobre o preto do rodapé. */
 .logo-rodape { display: inline-block; }
 .logo-rodape img {
-  height: 84px; width: auto; display: block;
+  height: 92px; width: auto; display: block;
+  /* Pinta o símbolo de branco preservando a transparência: brightness(0)
+     leva tudo a preto e invert(1) devolve em branco. */
+  filter: brightness(0) invert(1);
   /* O PNG tem margem transparente embutida, então o símbolo nasce recuado.
      Em transform a % é relativa ao próprio elemento, então o alinhamento
      com o texto abaixo se mantém em qualquer altura. */
@@ -671,10 +673,10 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   /* Banners de ponta a ponta */
   .secao-banners { padding: 30px 0 0; }
   .secao-banners .container { padding: 0; }
-  .carrossel-banners { border-radius: 0; aspect-ratio: 3 / 1; box-shadow: none; }
+  .carrossel-banners { border-radius: 0; aspect-ratio: 3 / 1; box-shadow: 0 14px 24px -14px rgba(21, 53, 42, .45); }
   .banners-pontos { margin-top: 10px; }
 
-  .logo-rodape img { height: 66px; }
+  .logo-rodape img { height: 74px; }
 
   .carrossel-imoveis { grid-auto-columns: 82%; gap: 14px; }
   .foto-dono { width: 180px; height: 180px; }
@@ -684,8 +686,12 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   .grade-cidades { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .card-cidade .cidade-nome { font-size: .95rem; }
   .card-cidade .cidade-qtd { font-size: .72rem; }
+  /* Só o WhatsApp e o Instagram sobram: centraliza sem quebrar linha,
+     que era o que deixava a barra torta. */
   .topbar .container > span:first-child { display: none; }
-  .topbar .container { justify-content: center; }
+  .topbar .container { justify-content: center; flex-wrap: nowrap; }
+  .topbar-contatos { gap: 14px; }
+  .topbar a { line-height: 1; }
   #topbar-email { display: none; }
   /* O banner é bem largo (2,56:1). No "cover" de uma tela estreita o corte
      central deixaria de fora a casa e a família, que estão à direita. */

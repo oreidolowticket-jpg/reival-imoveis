@@ -346,35 +346,37 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   justify-content: space-between;
   gap: 12px;
   padding: 11px 14px;
-  background: linear-gradient(90deg, var(--verde-600), var(--verde-500));
+  /* Mesmo verde chapado da barra de contatos do topo. */
+  background: var(--verde-600);
 }
+/* Estrela solta, sem o círculo em volta. */
 .faixa-estrela {
-  width: 33px; height: 33px;
-  border-radius: 50%;
   display: grid; place-items: center;
   flex-shrink: 0;
-  background: rgba(255, 255, 255, .10);
-  border: 1px solid rgba(255, 255, 255, .22);
   color: #fbbf24;
 }
-.faixa-estrela svg { width: 18px; height: 18px; display: block; }
+.faixa-estrela svg { width: 23px; height: 23px; display: block; }
 .faixa-selos { display: flex; gap: 8px; flex-wrap: wrap; }
 /* Selos dentro da faixa: sobre o verde escuro, invertem para o verde claro. */
+/* Principal: branco cheio com texto preto. É o maior contraste possível
+   sobre o verde, então é ele que o olho pega primeiro. */
 .selo-faixa {
   font-size: .79rem; font-weight: 700;
   padding: 7px 16px;
   border-radius: 999px;
   text-transform: uppercase;
   letter-spacing: .04em;
-  background: var(--verde-400);
-  color: var(--verde-600);
+  background: #fff;
+  color: var(--escuro-900);
 }
+/* Secundário: contornado em verde claro. Vazado contra cheio é o que
+   cria a hierarquia — dois selos cheios brigariam entre si. */
 .selo-faixa.financia {
   background: transparent;
   color: var(--verde-400);
-  box-shadow: inset 0 0 0 1px rgba(118, 175, 152, .55);
+  box-shadow: inset 0 0 0 1.5px var(--verde-400);
 }
-.selo-faixa.aluguel { background: #fff; color: var(--verde-600); }
+.selo-faixa.aluguel { background: var(--verde-400); color: var(--verde-600); }
 /* Leve escurecimento na base da foto: dá profundidade e uniformiza
    fotos de qualidades diferentes sem parecer filtro. */
 #grade-destaques .card-foto::before {
@@ -919,7 +921,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   .atributos-grade { grid-template-columns: 1fr; }
   .card-faixa { padding: 10px 12px; gap: 8px; }
   .selo-faixa { font-size: .72rem; padding: 6px 12px; }
-  .faixa-estrela { width: 30px; height: 30px; }
+  .faixa-estrela svg { width: 20px; height: 20px; }
   .grade-cidades { grid-template-columns: 1fr; }
   .card-atributos { gap: 10px; font-size: .8rem; }
 }

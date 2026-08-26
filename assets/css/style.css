@@ -16,8 +16,8 @@
   --cinza-100: #f5f5f4;
   --branco: #ffffff;
   --verde: #16a34a;
-  --sombra: 0 10px 30px rgba(28, 25, 23, 0.10);
-  --sombra-suave: 0 4px 14px rgba(28, 25, 23, 0.07);
+  --sombra: 0 10px 30px rgba(20, 53, 42, 0.10);
+  --sombra-suave: 0 4px 14px rgba(20, 53, 42, 0.07);
   --raio: 16px;
   --fonte: 'Poppins', system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
@@ -107,7 +107,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 .hero {
   position: relative;
   background:
-    linear-gradient(100deg, rgba(28, 25, 23, .93) 0%, rgba(28, 25, 23, .72) 48%, rgba(28, 25, 23, .38) 100%),
+    linear-gradient(100deg, rgba(20, 53, 42, .93) 0%, rgba(20, 53, 42, .72) 48%, rgba(20, 53, 42, .38) 100%),
     url('../banner.webp') center / cover no-repeat;
   color: #fff;
   min-height: 460px;
@@ -456,7 +456,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 .card-cidade::after {
   content: '';
   position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(28,25,23,.05) 30%, rgba(28,25,23,.72) 100%);
+  background: linear-gradient(180deg, rgba(20,53,42,.05) 30%, rgba(20,53,42,.72) 100%);
 }
 .card-cidade .cidade-info {
   position: absolute; inset: 0;
@@ -573,7 +573,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 .galeria-nav.prox { right: 14px; }
 .galeria-contador {
   position: absolute; bottom: 12px; right: 14px;
-  background: rgba(28,25,23,.65);
+  background: rgba(20,53,42,.65);
   color: #fff;
   font-size: .78rem;
   padding: 4px 12px;
@@ -681,7 +681,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   #topbar-email { display: none; }
   .hero {
     background:
-      linear-gradient(rgba(28, 25, 23, .9), rgba(28, 25, 23, .78)),
+      linear-gradient(rgba(20, 53, 42, .9), rgba(20, 53, 42, .78)),
       url('../banner.webp') center / cover no-repeat;
     min-height: 0;
     padding: 56px 0 104px;

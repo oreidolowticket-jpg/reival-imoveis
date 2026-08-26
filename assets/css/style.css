@@ -222,7 +222,10 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 
 /* Terrenos: fundo verde-claro para não se confundir com o cinza da seção
    de cima, e para emendar na faixa verde-escura que vem logo depois. */
-#terrenos { background: var(--verde-50); }
+#terrenos { background: var(--verde-50); padding: 56px 0 60px; }
+/* O respiro acima do cabeçalho vem do padding da seção e o de baixo da
+   margem do cabeçalho. Iguais, o bloco fica centrado entre os carrosséis. */
+#terrenos .secao-cabecalho { margin-bottom: 56px; }
 .icone-secao {
   width: 52px; height: 52px;
   border-radius: 50%;
@@ -860,6 +863,9 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   .hero p.sub { font-size: 1rem; }
   .hero-acoes .btn { width: 100%; }
   .secao { padding: 48px 0; }
+  #terrenos { padding: 42px 0 46px; }
+  #terrenos .secao-cabecalho { margin-bottom: 42px; }
+  .icone-secao { width: 46px; height: 46px; margin-bottom: 14px; }
   .faixa-stats { padding: 34px 0; }
   .stat .numero { font-size: 1.5rem; }
   .rodape { padding-top: 44px; }

@@ -107,7 +107,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 .hero {
   position: relative;
   background:
-    linear-gradient(100deg, rgba(20, 53, 42, .93) 0%, rgba(20, 53, 42, .72) 48%, rgba(20, 53, 42, .38) 100%),
+    linear-gradient(100deg, rgba(20, 53, 42, .82) 0%, rgba(20, 53, 42, .58) 48%, rgba(20, 53, 42, .24) 100%),
     url('../banner.webp') center / cover no-repeat;
   color: #fff;
   min-height: 460px;
@@ -116,15 +116,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   padding: 70px 0 120px;
   overflow: hidden;
 }
-.hero .container { width: 100%; }
-.hero::after {
-  content: '';
-  position: absolute; inset: 0;
-  background-image: radial-gradient(rgba(255,255,255,.06) 1.5px, transparent 1.5px);
-  background-size: 28px 28px;
-  pointer-events: none;
-}
-.hero .container { position: relative; z-index: 1; }
+.hero .container { width: 100%; position: relative; z-index: 1; }
 .hero-conteudo { max-width: 640px; }
 .hero .selo {
   display: inline-flex; align-items: center; gap: 8px;
@@ -695,7 +687,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   #topbar-email { display: none; }
   .hero {
     background:
-      linear-gradient(rgba(20, 53, 42, .9), rgba(20, 53, 42, .78)),
+      linear-gradient(rgba(20, 53, 42, .78), rgba(20, 53, 42, .62)),
       url('../banner.webp') center / cover no-repeat;
     min-height: 0;
     padding: 56px 0 104px;

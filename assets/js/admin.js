@@ -493,6 +493,8 @@ function renderBanners() {
         <div class="meta">
           <span>Ordem: ${b.ordem}</span>
           ${b.link ? '<span>Com link</span>' : ''}
+          ${b.exibir_em === 'desktop' ? '<span class="etiqueta tela">Só computador</span>' : ''}
+          ${b.exibir_em === 'mobile' ? '<span class="etiqueta tela">Só celular</span>' : ''}
           ${b.ativo ? '' : '<span class="etiqueta oculto">Oculto</span>'}
         </div>
       </div>
@@ -510,6 +512,7 @@ function abrirFormBanner(banner) {
   $('b-id').value = '';
   $('b-ativo').checked = true;
   $('b-ordem').value = 0;
+  $('b-exibir-em').value = 'ambos';
   $('banner-status').textContent = '';
 
   if (banner) {
@@ -518,6 +521,7 @@ function abrirFormBanner(banner) {
     $('b-titulo').value = banner.titulo || '';
     $('b-link').value = banner.link || '';
     $('b-ordem').value = banner.ordem ?? 0;
+    $('b-exibir-em').value = banner.exibir_em || 'ambos';
     $('b-ativo').checked = !!banner.ativo;
     bannerImagemForm = { url: banner.imagem };
   } else {
@@ -618,6 +622,7 @@ $('form-banner').addEventListener('submit', async (e) => {
       titulo: $('b-titulo').value.trim() || null,
       link: $('b-link').value.trim() || null,
       ordem: Number($('b-ordem').value || 0),
+      exibir_em: $('b-exibir-em').value,
       ativo: $('b-ativo').checked,
       imagem,
     };

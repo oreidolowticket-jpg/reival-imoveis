@@ -214,9 +214,14 @@ async function carregarCidades() {
 }
 
 // ---------- Carrossel de banners ----------
-let bannersSite = [];
+let bannersTodos = [];   // tudo que veio do banco
+let bannersSite = [];    // só o que aparece nesta tela
 let bannerAtivo = 0;
 let bannerTimer;
+let deslizeAtivado = false;
+
+// Mesmo ponto de quebra do CSS
+const telaCelular = window.matchMedia('(max-width: 640px)');
 
 async function carregarBanners() {
   const { data } = await sb
@@ -226,10 +231,34 @@ async function carregarBanners() {
     .order('ordem', { ascending: true })
     .order('criado_em', { ascending: true });
 
-  bannersSite = data || [];
-  if (!bannersSite.length) return;
+  bannersTodos = data || [];
+  montarBanners();
+  // Girar o celular ou redimensionar a janela pode trocar o conjunto
+  telaCelular.addEventListener('change', montarBanners);
+}
 
+// Filtra pela tela e remonta. Separado do carregamento porque roda de novo
+// quando o visitante cruza o ponto de quebra.
+function montarBanners() {
+  const tela = telaCelular.matches ? 'mobile' : 'desktop';
+  bannersSite = bannersTodos.filter((b) => {
+    const onde = b.exibir_em || 'ambos';
+    return onde === 'ambos' || onde === tela;
+  });
+
+  const secao = document.getElementById('banners-secao');
   const cont = document.getElementById('carrossel-banners');
+
+  clearInterval(bannerTimer);
+  bannerAtivo = 0;
+
+  if (!bannersSite.length) {
+    cont.innerHTML = '';
+    document.getElementById('banners-pontos').innerHTML = '';
+    secao.style.display = 'none';
+    return;
+  }
+
   cont.innerHTML = bannersSite.map((b, i) => {
     const img = `<img src="${esc(b.imagem)}" alt="${esc(b.titulo || 'Banner')}" loading="${i === 0 ? 'eager' : 'lazy'}" draggable="false">`;
     // Link interno (#secao ou /pagina) abre na mesma aba; externo em nova.
@@ -244,13 +273,14 @@ async function carregarBanners() {
     ? bannersSite.map((_, i) => `<button class="banner-ponto ${i === 0 ? 'ativo' : ''}" data-i="${i}" aria-label="Ir para o banner ${i + 1}"></button>`).join('')
     : '';
 
-  document.getElementById('banners-secao').style.display = '';
+  secao.style.display = '';
 
   if (bannersSite.length > 1) {
     document.querySelectorAll('.banner-ponto').forEach((p) => {
       p.addEventListener('click', () => mudarBanner(Number(p.dataset.i)));
     });
-    ativarDeslize(cont);
+    // O contêiner não é recriado, então os ouvintes de arrasto entram uma vez só
+    if (!deslizeAtivado) { ativarDeslize(cont); deslizeAtivado = true; }
     reiniciarAutoplay();
   }
 }

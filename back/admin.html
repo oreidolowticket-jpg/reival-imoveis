@@ -140,6 +140,7 @@
     .etiqueta.aluguel { background: var(--escuro-700); }
     .etiqueta.destaque { background: var(--verde); }
     .etiqueta.oculto { background: var(--cinza-500); }
+    .etiqueta.tela { background: var(--verde-500); }
     .linha-acoes { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 
     /* ---------- Modal formulário ---------- */
@@ -405,6 +406,15 @@
             <button type="button" class="chip-link" data-link="/corretor">/corretor</button>
             <br>Para um site externo, cole o endereço com <strong>https://</strong> — esse abre em nova aba.
           </p>
+        </div>
+        <div class="campo">
+          <label for="b-exibir-em">Aparece em</label>
+          <select id="b-exibir-em">
+            <option value="ambos">Computador e celular</option>
+            <option value="desktop">Só no computador</option>
+            <option value="mobile">Só no celular</option>
+          </select>
+          <p class="dica-campo">Útil para banner com QR code, que só funciona no computador.</p>
         </div>
         <div class="campo">
           <label for="b-ordem">Ordem de exibição (menor aparece primeiro)</label>

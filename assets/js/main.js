@@ -85,7 +85,7 @@ async function carregarImoveis() {
     .from('imoveis')
     .select('*')
     .eq('ativo', true)
-    .order('destaque', { ascending: false })
+    .order('ordem', { ascending: true })
     .order('criado_em', { ascending: false });
 
   if (error) {

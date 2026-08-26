@@ -74,7 +74,7 @@ async function carregar() {
     .select('*')
     .eq('ativo', true)
     .eq('cidade', cidade)
-    .order('destaque', { ascending: false })
+    .order('ordem', { ascending: true })
     .order('criado_em', { ascending: false });
 
   if (error) {

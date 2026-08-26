@@ -89,10 +89,13 @@ $('btn-sair').addEventListener('click', async () => {
 });
 
 // ---------- Listagem ----------
+const ICONE_ALCA = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="9" cy="5" r="1.7"/><circle cx="15" cy="5" r="1.7"/><circle cx="9" cy="12" r="1.7"/><circle cx="15" cy="12" r="1.7"/><circle cx="9" cy="19" r="1.7"/><circle cx="15" cy="19" r="1.7"/></svg>';
+
 async function carregarImoveis() {
   const { data, error } = await sb
     .from('imoveis')
     .select('*')
+    .order('ordem', { ascending: true })
     .order('criado_em', { ascending: false });
 
   if (error) {
@@ -124,13 +127,20 @@ function renderLista() {
     return;
   }
 
+  // Com a busca ativa a lista mostra so uma parte, entao reordenar
+  // bagunçaria os que estao fora dela. A alca fica desabilitada.
+  const podeOrdenar = !termo;
+
   $('lista-imoveis').innerHTML = lista.map((i) => {
     const fotos = Array.isArray(i.fotos) ? i.fotos : [];
     const foto = fotos.length
       ? `<img src="${esc(fotos[0])}" alt="">`
       : '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>';
     return `
-      <div class="linha-imovel ${i.ativo ? '' : 'inativo'}">
+      <div class="linha-imovel linha-ordenavel ${i.ativo ? '' : 'inativo'}" data-id="${i.id}">
+        <button type="button" class="alca" ${podeOrdenar ? '' : 'disabled'}
+          title="${podeOrdenar ? 'Arraste para mudar a ordem' : 'Limpe a busca para reordenar'}"
+          aria-label="Mover ${esc(tituloImovel(i))}">${ICONE_ALCA}</button>
         <div class="linha-foto">${foto}</div>
         <div class="linha-info">
           <h3>${esc(tituloImovel(i))}</h3>
@@ -156,6 +166,68 @@ function renderLista() {
 }
 
 $('filtro-admin').addEventListener('input', renderLista);
+
+// ---------- Reordenar imóveis arrastando pela alça ----------
+// A captura do ponteiro fica no container (que nunca sai do lugar) e não na
+// alça, porque a linha arrastada é movida no DOM durante o arrasto.
+(function reordenar() {
+  const container = $('lista-imoveis');
+  let linhaArrastada = null;
+
+  container.addEventListener('pointerdown', (ev) => {
+    const alca = ev.target.closest('.alca');
+    if (!alca || alca.disabled) return;
+    linhaArrastada = alca.closest('.linha-imovel');
+    if (!linhaArrastada) return;
+    linhaArrastada.classList.add('arrastando');
+    container.setPointerCapture(ev.pointerId);
+    ev.preventDefault();
+  });
+
+  container.addEventListener('pointermove', (ev) => {
+    if (!linhaArrastada) return;
+    const sob = document.elementFromPoint(ev.clientX, ev.clientY);
+    const alvo = sob && sob.closest ? sob.closest('.linha-imovel') : null;
+    if (!alvo || alvo === linhaArrastada || alvo.parentNode !== container) return;
+    const area = alvo.getBoundingClientRect();
+    const depois = ev.clientY > area.top + area.height / 2;
+    container.insertBefore(linhaArrastada, depois ? alvo.nextSibling : alvo);
+  });
+
+  const encerrar = () => {
+    if (!linhaArrastada) return;
+    linhaArrastada.classList.remove('arrastando');
+    linhaArrastada = null;
+    salvarOrdem();
+  };
+  container.addEventListener('pointerup', encerrar);
+  container.addEventListener('pointercancel', encerrar);
+})();
+
+async function salvarOrdem() {
+  const ids = [...$('lista-imoveis').querySelectorAll('.linha-imovel')].map((l) => l.dataset.id);
+  const mudancas = [];
+  ids.forEach((id, indice) => {
+    const imovel = imoveis.find((i) => i.id === id);
+    if (imovel && imovel.ordem !== indice + 1) mudancas.push({ imovel, ordem: indice + 1 });
+  });
+  if (!mudancas.length) return;
+
+  const resultados = await Promise.all(
+    mudancas.map((m) => sb.from('imoveis').update({ ordem: m.ordem }).eq('id', m.imovel.id)),
+  );
+  const falha = resultados.find((r) => r.error);
+  if (falha) {
+    console.error(falha.error);
+    toast('Erro ao salvar a ordem. Recarregando a lista.');
+    carregarImoveis();
+    return;
+  }
+
+  mudancas.forEach((m) => { m.imovel.ordem = m.ordem; });
+  imoveis.sort((a, b) => a.ordem - b.ordem);
+  toast('Ordem atualizada!');
+}
 
 // ---------- Ações rápidas ----------
 window.alternarCampo = async (id, campo) => {

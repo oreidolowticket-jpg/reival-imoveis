@@ -99,12 +99,26 @@ async function carregarImoveis() {
   renderizar(todosImoveis.filter((i) => i.destaque), 'grade-destaques', 'Nenhum destaque no momento.', { faixa: true });
   renderizar(todosImoveis.filter((i) => !i.somente_destaque), 'grade-imoveis', 'Nenhum imóvel disponível no momento.');
   document.getElementById('stat-imoveis').textContent = todosImoveis.length;
+  montarTerrenos();
   preencherCidades();
 }
 
-// Arrastar o carrossel de imóveis com o mouse (no toque o navegador já resolve)
-(function arrastarCarrossel() {
-  const el = document.getElementById('grade-imoveis');
+// A seção de terrenos só existe na página quando há terreno publicado.
+// Seção vazia passa a impressão de site abandonado, então ela fica fora do
+// caminho até o primeiro cadastro.
+function montarTerrenos() {
+  const secao = document.getElementById('terrenos');
+  if (!secao) return;
+  const terrenos = todosImoveis.filter((i) => i.tipo === 'Terreno' && !i.somente_destaque);
+  if (!terrenos.length) { secao.style.display = 'none'; return; }
+  renderizar(terrenos, 'grade-terrenos', '');
+  secao.style.display = '';
+}
+
+// Arrastar o carrossel com o mouse (no toque o navegador já resolve)
+function arrastarCarrossel(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
   let inicioX = null;
   let inicioScroll = 0;
   let arrastou = false;
@@ -129,7 +143,9 @@ async function carregarImoveis() {
   el.addEventListener('click', (e) => {
     if (arrastou) { e.preventDefault(); e.stopPropagation(); arrastou = false; }
   }, true);
-})();
+}
+arrastarCarrossel('grade-imoveis');
+arrastarCarrossel('grade-terrenos');
 
 function preencherCidades() {
   const cidades = [...new Set(todosImoveis.map((i) => i.cidade).filter(Boolean))]

@@ -8,13 +8,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231c1917'/><path d='M50 22 L82 50 L72 50 L72 78 L28 78 L28 50 L18 50 Z' fill='%23f4630b'/></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231c1917'/><path d='M50 22 L82 50 L72 50 L72 78 L28 78 L28 50 L18 50 Z' fill='%2359c09a'/></svg>">
   <style>
     :root {
-      --laranja-600: #ea580c;
-      --laranja-500: #f4630b;
-      --laranja-100: #ffedd5;
-      --laranja-50: #fff7ed;
+      --verde-600: #14352a;
+      --verde-500: #1c4a3b;
+      --verde-100: #d3eee4;
+      --verde-50: #edf8f4;
+      --laranja-venda: #ea580c; /* usado apenas no selo "Venda" */
       --escuro-900: #1c1917;
       --escuro-700: #44403c;
       --cinza-500: #78716c;
@@ -33,11 +34,11 @@
 
     .btn {
       display: inline-flex; align-items: center; gap: 8px; justify-content: center;
-      background: var(--laranja-600); color: #fff; border: none;
+      background: var(--verde-600); color: #fff; border: none;
       border-radius: 10px; padding: 11px 22px; font-weight: 600; font-size: .92rem;
       transition: background .2s;
     }
-    .btn:hover { background: var(--laranja-500); }
+    .btn:hover { background: var(--verde-500); }
     .btn-cinza { background: var(--escuro-700); }
     .btn-cinza:hover { background: var(--escuro-900); }
     .btn-borda { background: transparent; color: var(--escuro-700); border: 1.5px solid var(--cinza-300); }
@@ -49,7 +50,7 @@
     /* ---------- Login ---------- */
     .tela-login {
       min-height: 100vh; display: grid; place-items: center; padding: 20px;
-      background: radial-gradient(900px 500px at 80% -10%, rgba(244,99,11,.30), transparent 60%), linear-gradient(160deg, #292524, var(--escuro-900));
+      background: radial-gradient(900px 500px at 80% -10%, rgba(89,192,154,.20), transparent 60%), linear-gradient(160deg, #292524, var(--escuro-900));
     }
     .login-card {
       background: var(--branco); border-radius: var(--raio); box-shadow: var(--sombra);
@@ -58,10 +59,10 @@
     .login-card .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.2rem; margin-bottom: 6px; }
     .login-card .logo-icone {
       width: 40px; height: 40px; border-radius: 11px; color: #fff;
-      background: linear-gradient(135deg, var(--laranja-500), var(--laranja-600));
+      background: linear-gradient(135deg, var(--verde-500), var(--verde-600));
       display: grid; place-items: center;
     }
-    .login-card .logo span.destaque { color: var(--laranja-600); }
+    .login-card .logo span.destaque { color: var(--verde-600); }
     .login-card p.sub { color: var(--cinza-500); font-size: .88rem; margin-bottom: 24px; }
     .campo { margin-bottom: 16px; }
     .campo label { display: block; font-size: .78rem; font-weight: 600; color: var(--cinza-500); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px; }
@@ -69,7 +70,7 @@
       width: 100%; border: 1.5px solid var(--cinza-300); border-radius: 10px;
       padding: 11px 14px; background: var(--branco); outline: none; transition: border-color .2s;
     }
-    .campo input:focus, .campo select:focus, .campo textarea:focus { border-color: var(--laranja-500); }
+    .campo input:focus, .campo select:focus, .campo textarea:focus { border-color: var(--verde-500); }
     .campo textarea { min-height: 110px; resize: vertical; }
     .erro { background: #fef2f2; color: var(--vermelho); border: 1px solid #fecaca; border-radius: 10px; padding: 10px 14px; font-size: .85rem; margin-bottom: 16px; display: none; }
     .erro.visivel { display: block; }
@@ -83,14 +84,14 @@
       position: sticky; top: 0; z-index: 40;
     }
     .painel-topo .logo { display: flex; align-items: center; gap: 10px; font-weight: 600; }
-    .painel-topo .logo .logo-icone { width: 34px; height: 34px; border-radius: 9px; background: var(--laranja-600); display: grid; place-items: center; }
+    .painel-topo .logo .logo-icone { width: 34px; height: 34px; border-radius: 9px; background: var(--verde-600); display: grid; place-items: center; }
     .painel-topo .acoes { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
     .painel-topo .email-admin { font-size: .8rem; color: var(--cinza-300); }
     .conteudo { max-width: 1150px; margin: 0 auto; padding: 28px 20px 60px; }
 
     .cards-resumo { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 28px; }
     .card-resumo { background: var(--branco); border-radius: var(--raio); padding: 18px 22px; box-shadow: var(--sombra); }
-    .card-resumo .num { font-size: 1.7rem; font-weight: 700; color: var(--laranja-600); }
+    .card-resumo .num { font-size: 1.7rem; font-weight: 700; color: var(--verde-600); }
     .card-resumo .rot { font-size: .82rem; color: var(--cinza-500); }
 
     .barra-acoes { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 18px; }
@@ -104,13 +105,13 @@
       padding: 14px 18px; display: grid; grid-template-columns: 86px 1fr auto; gap: 16px; align-items: center;
     }
     .linha-imovel.inativo { opacity: .55; }
-    .linha-foto { width: 86px; height: 64px; border-radius: 10px; overflow: hidden; background: linear-gradient(135deg, var(--laranja-100), var(--cinza-100)); display: grid; place-items: center; color: var(--laranja-500); }
+    .linha-foto { width: 86px; height: 64px; border-radius: 10px; overflow: hidden; background: linear-gradient(135deg, var(--verde-100), var(--cinza-100)); display: grid; place-items: center; color: var(--verde-500); }
     .linha-foto img { width: 100%; height: 100%; object-fit: cover; }
     .linha-info h3 { font-size: .98rem; font-weight: 600; }
     .linha-info .meta { font-size: .8rem; color: var(--cinza-500); display: flex; gap: 10px; flex-wrap: wrap; margin-top: 3px; }
-    .linha-info .preco { color: var(--laranja-600); font-weight: 700; }
+    .linha-info .preco { color: var(--verde-600); font-weight: 700; }
     .etiqueta { font-size: .68rem; font-weight: 700; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; color: #fff; }
-    .etiqueta.venda { background: var(--laranja-600); }
+    .etiqueta.venda { background: var(--laranja-venda); }
     .etiqueta.aluguel { background: var(--escuro-700); }
     .etiqueta.destaque { background: var(--verde); }
     .etiqueta.oculto { background: var(--cinza-500); }
@@ -132,7 +133,7 @@
     .campo-cheio { grid-column: 1 / -1; }
     .linha-check { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 18px; }
     .check { display: flex; align-items: center; gap: 8px; font-size: .9rem; font-weight: 500; }
-    .check input { width: 18px; height: 18px; accent-color: var(--laranja-600); }
+    .check input { width: 18px; height: 18px; accent-color: var(--verde-600); }
 
     .area-fotos { border: 2px dashed var(--cinza-300); border-radius: var(--raio); padding: 20px; text-align: center; margin-bottom: 18px; }
     .area-fotos p { font-size: .85rem; color: var(--cinza-500); margin-bottom: 10px; }

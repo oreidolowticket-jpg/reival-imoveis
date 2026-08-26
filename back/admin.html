@@ -71,6 +71,14 @@
     }
     .campo input:focus, .campo select:focus, .campo textarea:focus { border-color: var(--verde-500); }
     .campo textarea { min-height: 110px; resize: vertical; }
+    .dica-campo { font-size: .78rem; color: var(--cinza-500); margin-top: 7px; line-height: 1.9; }
+    .chip-link {
+      background: var(--verde-50); color: var(--verde-600);
+      border: 1px solid var(--verde-100); border-radius: 999px;
+      padding: 2px 10px; font-size: .74rem; font-weight: 600; font-family: inherit;
+      transition: background .15s;
+    }
+    .chip-link:hover { background: var(--verde-100); }
     .erro { background: #fef2f2; color: var(--vermelho); border: 1px solid #fecaca; border-radius: 10px; padding: 10px 14px; font-size: .85rem; margin-bottom: 16px; display: none; }
     .erro.visivel { display: block; }
 
@@ -388,7 +396,15 @@
         </div>
         <div class="campo">
           <label for="b-link">Link ao clicar (opcional)</label>
-          <input type="url" id="b-link" placeholder="https://... (deixe em branco se não tiver)">
+          <input type="text" id="b-link" placeholder="#destaques (deixe em branco se não tiver)">
+          <p class="dica-campo">
+            Atalhos do próprio site, abrem na mesma página:
+            <button type="button" class="chip-link" data-link="#destaques">#destaques</button>
+            <button type="button" class="chip-link" data-link="#imoveis">#imoveis</button>
+            <button type="button" class="chip-link" data-link="#cidades-secao">#cidades-secao</button>
+            <button type="button" class="chip-link" data-link="/corretor">/corretor</button>
+            <br>Para um site externo, cole o endereço com <strong>https://</strong> — esse abre em nova aba.
+          </p>
         </div>
         <div class="campo">
           <label for="b-ordem">Ordem de exibição (menor aparece primeiro)</label>

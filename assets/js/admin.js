@@ -574,6 +574,14 @@ window.removerImagemBanner = () => {
   renderPreviewBanner();
 };
 
+// Atalhos de link: preenchem o campo em vez de o usuario digitar
+document.querySelectorAll('.chip-link').forEach((chip) => {
+  chip.addEventListener('click', () => {
+    $('b-link').value = chip.dataset.link;
+    $('b-link').focus();
+  });
+});
+
 $('btn-novo-banner').addEventListener('click', () => abrirFormBanner(null));
 $('btn-fechar-banner').addEventListener('click', fecharFormBanner);
 $('btn-cancelar-banner').addEventListener('click', fecharFormBanner);

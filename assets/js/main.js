@@ -232,8 +232,11 @@ async function carregarBanners() {
   const cont = document.getElementById('carrossel-banners');
   cont.innerHTML = bannersSite.map((b, i) => {
     const img = `<img src="${esc(b.imagem)}" alt="${esc(b.titulo || 'Banner')}" loading="${i === 0 ? 'eager' : 'lazy'}" draggable="false">`;
+    // Link interno (#secao ou /pagina) abre na mesma aba; externo em nova.
+    const interno = /^[#/]/.test(b.link || '');
+    const alvo = interno ? '' : ' target="_blank" rel="noopener"';
     return b.link
-      ? `<a class="banner-slide ${i === 0 ? 'ativo' : ''}" href="${esc(b.link)}" target="_blank" rel="noopener">${img}</a>`
+      ? `<a class="banner-slide ${i === 0 ? 'ativo' : ''}" href="${esc(b.link)}"${alvo}>${img}</a>`
       : `<div class="banner-slide ${i === 0 ? 'ativo' : ''}">${img}</div>`;
   }).join('');
 

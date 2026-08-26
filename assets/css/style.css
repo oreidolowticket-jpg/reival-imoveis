@@ -327,14 +327,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   transform: scale(1.9);
   transform-origin: 54% 46%;
 }
-.foto-dono::before {
-  content: '';
-  position: absolute; inset: -12px;
-  border-radius: 50%;
-  border: 2px dashed var(--laranja-400);
-  animation: girar-anel 40s linear infinite;
-}
-@keyframes girar-anel { to { transform: rotate(360deg); } }
+.foto-dono { box-shadow: 0 0 0 10px var(--laranja-50), var(--sombra-suave); }
 .foto-dono-badge {
   position: absolute; right: 4px; bottom: 6px;
   width: 36px; height: 36px;

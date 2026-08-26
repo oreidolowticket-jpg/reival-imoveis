@@ -413,17 +413,11 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   position: relative;
   overflow: hidden;
 }
-.cta-anuncie::before {
-  content: '';
-  position: absolute; right: -80px; top: -80px;
-  width: 300px; height: 300px;
-  background: radial-gradient(circle, rgba(244,99,11,.4), transparent 70%);
-}
 .cta-anuncie h2 { font-size: clamp(1.4rem, 3vw, 1.9rem); position: relative; }
 .cta-anuncie p { color: #d6d3d1; margin-top: 8px; position: relative; }
 
 /* ---------- Rodapé ---------- */
-.rodape { background: var(--escuro-900); color: #d6d3d1; padding: 60px 0 0; margin-top: 70px; }
+.rodape { background: #000; color: #d6d3d1; padding: 60px 0 0; margin-top: 70px; }
 .rodape-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 40px; padding-bottom: 40px; }
 .rodape h4 { color: #fff; font-size: 1rem; margin-bottom: 14px; }
 .rodape ul { list-style: none; display: grid; gap: 8px; font-size: .9rem; }

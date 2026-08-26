@@ -6,7 +6,10 @@ module.exports = async (req, res) => {
   const host = req.headers['x-forwarded-host'] || req.headers.host;
   const base = `https://${host}`;
 
-  const urls = [{ loc: `${base}/`, lastmod: null, priority: '1.0' }];
+  const urls = [
+    { loc: `${base}/`, lastmod: null, priority: '1.0' },
+    { loc: `${base}/corretor`, lastmod: null, priority: '0.6' },
+  ];
 
   try {
     const r = await fetch(

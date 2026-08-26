@@ -25,6 +25,19 @@ module.exports = async (req, res) => {
     }
   } catch (e) { /* sitemap sai só com a home */ }
 
+  try {
+    const r = await fetch(
+      `${SUPABASE_URL}/rest/v1/cidades?ativo=eq.true&select=nome`,
+      { headers: { apikey: SUPABASE_KEY } }
+    );
+    const rows = await r.json();
+    if (Array.isArray(rows)) {
+      for (const c of rows) {
+        urls.push({ loc: `${base}/cidade?c=${encodeURIComponent(c.nome)}`, lastmod: null, priority: '0.7' });
+      }
+    }
+  } catch (e) { /* segue sem as cidades */ }
+
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
     urls.map((u) =>

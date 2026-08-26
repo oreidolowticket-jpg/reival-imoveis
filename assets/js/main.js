@@ -188,24 +188,14 @@ async function carregarCidades() {
     const qtd = contagem[c.nome];
     const foto = c.imagem ? `<img src="${esc(c.imagem)}" alt="Imóveis em ${esc(c.nome)}" loading="lazy">` : '';
     return `
-      <button type="button" class="card-cidade" data-cidade="${esc(c.nome)}">
+      <a class="card-cidade" href="cidade?c=${encodeURIComponent(c.nome)}" target="_blank" rel="noopener">
         ${foto}
         <span class="cidade-info">
           <span class="cidade-nome">${esc(c.nome)}</span>
           <span class="cidade-qtd">${qtd} imóve${qtd === 1 ? 'l' : 'is'} disponíve${qtd === 1 ? 'l' : 'is'}</span>
         </span>
-      </button>`;
+      </a>`;
   }).join('');
-
-  document.querySelectorAll('.card-cidade').forEach((card) => {
-    card.addEventListener('click', () => {
-      document.getElementById('f-cidade').value = card.dataset.cidade;
-      document.getElementById('f-finalidade').value = '';
-      document.getElementById('f-tipo').value = '';
-      document.getElementById('f-bairro').value = '';
-      document.getElementById('form-busca').requestSubmit();
-    });
-  });
 
   document.getElementById('cidades-secao').style.display = '';
 }

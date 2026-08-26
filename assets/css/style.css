@@ -396,7 +396,7 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   color: #fff;
   text-align: center;
 }
-.card-cidade .cidade-nome { font-size: 1.15rem; font-weight: 700; text-shadow: 0 2px 8px rgba(0,0,0,.5); }
+.card-cidade .cidade-nome { font-size: 1.15rem; font-weight: 700; text-shadow: 0 2px 8px rgba(0,0,0,.5); color: #fff; }
 .card-cidade .cidade-qtd { font-size: .8rem; opacity: .9; text-shadow: 0 1px 6px rgba(0,0,0,.5); }
 
 /* ---------- CTA anuncie ---------- */

@@ -3,6 +3,7 @@
   "rewrites": [
     { "source": "/imovel", "destination": "/api/imovel" },
     { "source": "/imovel.html", "destination": "/api/imovel" },
+    { "source": "/cidade", "destination": "/cidade.html" },
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
     { "source": "/robots.txt", "destination": "/api/robots" }
   ]

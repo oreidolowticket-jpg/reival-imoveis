@@ -149,6 +149,7 @@ function arrastarCarrossel(id) {
     if (arrastou) { e.preventDefault(); e.stopPropagation(); arrastou = false; }
   }, true);
 }
+arrastarCarrossel('grade-destaques');
 arrastarCarrossel('grade-imoveis');
 arrastarCarrossel('grade-terrenos');
 

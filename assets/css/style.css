@@ -298,6 +298,52 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 .stat .numero { font-size: 2rem; font-weight: 700; }
 .stat .desc { font-size: .9rem; opacity: .9; }
 
+/* ---------- Foto do fundador ---------- */
+.foto-dono {
+  width: 160px; height: 160px;
+  margin: 0 auto 22px;
+  border-radius: 50%;
+  padding: 5px;
+  background: linear-gradient(135deg, var(--laranja-400), var(--laranja-600));
+  position: relative;
+}
+.foto-dono-circulo {
+  display: block;
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid var(--branco);
+  position: relative;
+  z-index: 1;
+  background: var(--laranja-100);
+}
+.foto-dono-circulo img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: 54% 0;
+  transform: scale(1.9);
+  transform-origin: 54% 46%;
+}
+.foto-dono::before {
+  content: '';
+  position: absolute; inset: -12px;
+  border-radius: 50%;
+  border: 2px dashed var(--laranja-400);
+  animation: girar-anel 40s linear infinite;
+}
+@keyframes girar-anel { to { transform: rotate(360deg); } }
+.foto-dono-badge {
+  position: absolute; right: 4px; bottom: 6px;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--laranja-500), var(--laranja-600));
+  color: #fff;
+  display: grid; place-items: center;
+  border: 3px solid var(--branco);
+  z-index: 2;
+  box-shadow: var(--sombra-suave);
+}
+
 /* ---------- Diferenciais ---------- */
 .diferenciais { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
 .diferencial {
@@ -536,6 +582,8 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   .logo-rodape img { height: 42px; }
 
   .carrossel-imoveis { grid-auto-columns: 82%; gap: 14px; }
+  .foto-dono { width: 132px; height: 132px; }
+  .foto-dono-badge { width: 32px; height: 32px; }
 
   /* Cidades em 2 colunas */
   .grade-cidades { grid-template-columns: repeat(2, 1fr); gap: 10px; }
